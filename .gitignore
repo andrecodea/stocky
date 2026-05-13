@@ -1,3 +1,54 @@
+# Diagrama e backups
+stocky.drawio
+*.bkp
+*.bak
+
 # Claude Code
 CLAUDE.md
 .memsearch/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+.venv/
+venv/
+env/
+.env
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+
+# React Native
+node_modules/
+.expo/
+.expo-shared/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+android/app/build/
+android/.gradle/
+android/local.properties
+ios/Pods/
+ios/build/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
