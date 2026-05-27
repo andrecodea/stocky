@@ -3,7 +3,7 @@ _utils.inject_css()
 
 import streamlit as st
 
-from backend.services.product_service import listar_estoque_atual
+from services.product_service import listar_estoque_atual
 
 st.title("Chat IA")
 st.caption("Tire dúvidas sobre o estoque com o agente inteligente")
@@ -41,7 +41,7 @@ if prompt := st.chat_input("Pergunte sobre o estoque, reposições, movimentaç�
     with st.chat_message("assistant"):
         with st.spinner(""):
             try:
-                from ai_service import answer_query
+                from services.ai_service import answer_query
                 response = answer_query(
                     query=prompt,
                     inventory=estoque,

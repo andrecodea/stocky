@@ -1,0 +1,85 @@
+- generic [ref=e2]:
+  - generic [ref=e7]:
+    - button "keyboard_double_arrow_left" [ref=e10] [cursor=pointer]:
+      - generic [ref=e12]: keyboard_double_arrow_left
+    - list [ref=e14]:
+      - listitem [ref=e15]:
+        - link "dashboard Dashboard" [ref=e17] [cursor=pointer]:
+          - /url: http://localhost:8501/
+          - generic [ref=e20]: dashboard
+          - paragraph [ref=e23]: Dashboard
+      - listitem [ref=e24]:
+        - link "inventory_2 Estoque" [ref=e26] [cursor=pointer]:
+          - /url: http://localhost:8501/estoque
+          - generic [ref=e29]: inventory_2
+          - paragraph [ref=e32]: Estoque
+      - listitem [ref=e33]:
+        - link "smart_toy Chat IA" [ref=e35] [cursor=pointer]:
+          - /url: http://localhost:8501/chat
+          - generic [ref=e38]: smart_toy
+          - paragraph [ref=e41]: Chat IA
+    - generic [ref=e45]:
+      - heading "📦 Stocky" [level=3] [ref=e50]
+      - paragraph [ref=e55]: Gestão inteligente de estoque
+      - separator [ref=e60]
+      - paragraph [ref=e65]: Powered by Supabase · OpenRouter
+  - generic [ref=e3]:
+    - banner [ref=e68]:
+      - generic [ref=e71]:
+        - button "Deploy" [ref=e73] [cursor=pointer]:
+          - generic [ref=e75]: Deploy
+        - button "Main menu" [ref=e77] [cursor=pointer]:
+          - img [ref=e78]
+    - generic [ref=e81]:
+      - heading "Dashboard" [level=1] [ref=e86]:
+        - text: Dashboard
+        - generic [ref=e87]:
+          - link "Link to heading":
+            - /url: "#dashboard"
+            - img
+      - paragraph [ref=e92]: Visão geral do catálogo e movimentações
+      - generic [ref=e94]:
+        - generic [ref=e99]:
+          - paragraph [ref=e102]: Produtos cadastrados
+          - paragraph [ref=e105]: "10"
+        - generic [ref=e110]:
+          - paragraph [ref=e113]: Alertas de estoque
+          - paragraph [ref=e116]: "4"
+          - generic [ref=e118]:
+            - img [ref=e119]
+            - paragraph [ref=e123]: "-4 abaixo do mínimo"
+        - generic [ref=e128]:
+          - paragraph [ref=e131]: Movimentações (recentes)
+          - paragraph [ref=e134]: "16"
+      - separator [ref=e139]
+      - heading "Produtos" [level=3] [ref=e144]:
+        - text: Produtos
+        - generic [ref=e145]:
+          - link "Link to heading":
+            - /url: "#produtos"
+            - img
+      - generic [ref=e150]:
+        - button "Show/hide columns" [ref=e154] [cursor=pointer]:
+          - img [ref=e155]
+        - button "Download as CSV" [ref=e160] [cursor=pointer]:
+          - img [ref=e161]
+        - button "Search" [ref=e166] [cursor=pointer]:
+          - img [ref=e167]
+        - button "Fullscreen" [ref=e172] [cursor=pointer]:
+          - img [ref=e173]
+      - separator [ref=e188]
+      - heading "Movimentações recentes" [level=3] [ref=e193]:
+        - text: Movimentações recentes
+        - generic [ref=e194]:
+          - link "Link to heading":
+            - /url: "#movimentacoes-recentes"
+            - img
+      - generic [ref=e199]:
+        - button "Show/hide columns" [ref=e203] [cursor=pointer]:
+          - img [ref=e204]
+        - button "Download as CSV" [ref=e209] [cursor=pointer]:
+          - img [ref=e210]
+        - button "Search" [ref=e215] [cursor=pointer]:
+          - img [ref=e216]
+        - button "Fullscreen" [ref=e221] [cursor=pointer]:
+          - img [ref=e222]

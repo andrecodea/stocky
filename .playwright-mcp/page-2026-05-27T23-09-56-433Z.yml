@@ -1,0 +1,59 @@
+- generic [ref=e2]:
+  - generic [ref=e7]:
+    - button "keyboard_double_arrow_left" [ref=e10] [cursor=pointer]:
+      - generic [ref=e12]: keyboard_double_arrow_left
+    - list [ref=e14]:
+      - listitem [ref=e15]:
+        - link "dashboard Dashboard" [ref=e17] [cursor=pointer]:
+          - /url: http://localhost:8501/
+          - generic [ref=e20]: dashboard
+          - paragraph [ref=e23]: Dashboard
+      - listitem [ref=e24]:
+        - link "inventory_2 Estoque" [ref=e26] [cursor=pointer]:
+          - /url: http://localhost:8501/estoque
+          - generic [ref=e29]: inventory_2
+          - paragraph [ref=e32]: Estoque
+      - listitem [ref=e33]:
+        - link "smart_toy Chat IA" [ref=e35] [cursor=pointer]:
+          - /url: http://localhost:8501/chat
+          - generic [ref=e38]: smart_toy
+          - paragraph [ref=e41]: Chat IA
+    - generic [ref=e45]:
+      - heading "📦 Stocky" [level=3] [ref=e50]
+      - paragraph [ref=e55]: Gestão inteligente de estoque
+      - separator [ref=e60]
+      - paragraph [ref=e65]: Powered by Supabase · OpenRouter
+      - separator [ref=e237]
+      - button "Limpar conversa" [ref=e240] [cursor=pointer]:
+        - paragraph [ref=e244]: Limpar conversa
+  - generic [ref=e3]:
+    - banner [ref=e68]:
+      - generic [ref=e71]:
+        - generic [ref=e278]:
+          - img "Running..." [ref=e279]:
+            - img [ref=e280]
+          - button "Stop" [ref=e284] [cursor=pointer]
+        - button "Deploy" [ref=e73] [cursor=pointer]:
+          - generic [ref=e75]: Deploy
+        - button "Main menu" [ref=e77] [cursor=pointer]:
+          - img [ref=e78]
+    - generic [ref=e245]:
+      - generic [ref=e247]:
+        - heading "Chat IA" [level=1] [ref=e252]:
+          - text: Chat IA
+          - generic [ref=e253]:
+            - link "Link to heading":
+              - /url: "#chat-ia"
+              - img
+        - paragraph [ref=e258]: Tire dúvidas sobre o estoque com o agente inteligente
+        - generic [ref=e286]:
+          - generic [ref=e289]: face
+          - generic "Chat message from user" [ref=e290]:
+            - paragraph [ref=e296]: Quais produtos estão abaixo do estoque mínimo e qual o preço atual do arroz integral no mercado?
+        - generic [ref=e298]:
+          - generic [ref=e301]: smart_toy
+          - generic "Chat message from assistant" [ref=e302]
+      - generic [ref=e267]:
+        - textbox "Pergunte sobre o estoque, reposições, movimentações..." [active] [ref=e271]
+        - button "Send message" [disabled] [ref=e273]:
+          - img [ref=e274]
