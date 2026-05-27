@@ -52,3 +52,10 @@ ios/build/
 # OS
 .DS_Store
 Thumbs.db
+
+# Playwright MCP
+.playwright-mcp/
+
+# Logs e screenshots locais
+log/
+*.png
