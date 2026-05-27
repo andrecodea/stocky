@@ -1,14 +1,10 @@
 import logging
+import os
 from langchain_core.tools import tool
 from tavily import TavilyClient
 
-_client: TavilyClient | None = None
-
 def _get_tavily_client() -> TavilyClient:
-    global _client
-    if _client is None:
-        _client = TavilyClient()
-    return _client
+    return TavilyClient(api_key=os.getenv("TAVILY_API_KEY", ""))
 
 log = logging.getLogger(__name__)
 
