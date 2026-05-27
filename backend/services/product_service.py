@@ -110,14 +110,17 @@ def _serialize_for_supabase(payload: dict) -> dict:
 # ---------------------------------------------------------------------------
 # Operações CRUD
 # ---------------------------------------------------------------------------
+# TODO: Transformar funções em endpoints do FastAPI
+# Documentação: https://fastapi.tiangolo.com/tutorial/first-steps/
 
 
+# get
 def listar_produtos() -> list[Product]:
     """Retorna todos os produtos cadastrados, ordenados por nome."""
     response = get_client().table(_TABLE).select("*").order("nome").execute()
     return [Product.model_validate(row) for row in response.data or []]
 
-
+# get
 def buscar_produto(produto_id: str) -> Product | None:
     """Busca um produto pelo seu UUID.
 
@@ -131,14 +134,14 @@ def buscar_produto(produto_id: str) -> Product | None:
         return None
     return Product.model_validate(rows[0])
 
-
+# post
 def criar_produto(data: ProductCreate) -> Product:
     """Insere um novo produto e retorna o registro persistido."""
     payload = _serialize_for_supabase(data.model_dump(exclude_none=True))
     response = get_client().table(_TABLE).insert(payload).execute()
     return Product.model_validate(response.data[0])
 
-
+# post
 def atualizar_produto(produto_id: str, data: ProductUpdate) -> Product | None:
     """Atualiza parcialmente um produto.
 
@@ -160,13 +163,13 @@ def atualizar_produto(produto_id: str, data: ProductUpdate) -> Product | None:
         return None
     return Product.model_validate(rows[0])
 
-
+# delete
 def deletar_produto(produto_id: str) -> bool:
     """Remove um produto. Retorna `True` se algo foi deletado."""
     response = get_client().table(_TABLE).delete().eq("id", produto_id).execute()
     return bool(response.data)
 
-
+# get
 def listar_estoque_atual() -> list[ProductWithStock]:
     """Lista a posição atual de estoque via view `estoque_atual`.
 
