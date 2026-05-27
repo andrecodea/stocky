@@ -1,11 +1,8 @@
 import logging
-import httpx
-from markdownify import markdownify as md
-from langchain_core.tools import InjectedToolArg, tool
+from langchain_core.tools import tool
 from tavily import TavilyClient
-from typing_extensions import Annotated, Literal
 
-_client: TavilyClient | None = None 
+_client: TavilyClient | None = None
 
 def _get_tavily_client() -> TavilyClient:
     global _client
@@ -16,53 +13,20 @@ def _get_tavily_client() -> TavilyClient:
 log = logging.getLogger(__name__)
 
 @tool
-def tavily_search(
-    query: str,
-    topic: Literal["general", "news", "finance"] = "general",
-    search_depth: Literal["advanced", "basic", "fast", "ultra-fast"] = "fast",
-    fetch_full_content: bool = False,
-    max_results: Annotated[int, InjectedToolArg] = 3,
-) -> str:
-    """Search the web for general context, facts, or news on a topic.
-    Prefer 'fast' for most queries. Use 'advanced' for high-precision research.
-    Set fetch_full_content=True to fetch and convert the full page content when snippets are insufficient.
+def tavily_search(query: str) -> str:
+    """Search the web for current information about a topic.
+
     Args:
-        query: Search query to execute
-        topic: 'general' for broad searches, 'news' for current events, 'finance' for financial data.
-        search_depth: 'fast' for low latency, 'ultra-fast' for minimum latency, 'basic' for balanced, 'advanced' for highest relevance.
-        fetch_full_content: Set True to fetch full page content via HTTP and convert to markdown. Use when snippet is insufficient.
+        query: Search query to execute.
     Returns:
-        Search results with title, URL, and content
+        Search results with title, URL, and content snippet.
     """
     try:
-        sep = "\n"
-        search_results = _get_tavily_client().search(
-            query=query,
-            max_results=max_results,
-            topic=topic,
-            search_depth=search_depth,
-        )
-        results_texts = []
-        for result in search_results.get("results", []):
-            url = result["url"]
-            title = result["title"]
-            if fetch_full_content:
-                try:
-                    response = httpx.get(url, follow_redirects=True, timeout=10)
-                    content = md(response.text)
-                except Exception as fetch_err:
-                    log.warning(f"[RESEARCH AGENT] httpx fetch failed for {url}: {fetch_err}, falling back to snippet")
-                    content = result.get("content", "")[:1000]
-            else:
-                content = result.get("content", "")[:1000]
-            result_text = (
-                f"{title}\n"
-                f"**URL:** {url}\n"
-                f"{content}\n\n"
-                "---\n"
-            )
-            results_texts.append(result_text)
-        return f"""Found {len(results_texts)} result(s) for '{query}'\n\n{sep.join(results_texts)}"""
+        response = _get_tavily_client().search(query)
+        lines = []
+        for r in response.get("results", []):
+            lines.append(f"**{r['title']}**\n{r['url']}\n{r.get('content', '')}\n---")
+        return "\n\n".join(lines) or "No results found."
     except Exception as e:
-        log.error(f"Failed to conduct a search on {query}: {e}", exc_info=True)
+        log.error(f"tavily_search failed for '{query}': {e}", exc_info=True)
         raise
