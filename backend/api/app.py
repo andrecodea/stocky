@@ -6,11 +6,15 @@ import uvicorn
 from dotenv import load_dotenv
 import logging
 import config
+from api.routers import router
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
 
 app = FastAPI(title="Stocky - Inventory Management")
+
+app.include_router(router)
+
 
 # Middleware
 app.add_middleware(
