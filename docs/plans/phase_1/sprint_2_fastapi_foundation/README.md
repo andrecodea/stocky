@@ -12,9 +12,9 @@ Criar a estrutura base do projeto FastAPI, conectar ao Supabase e implementar os
 
 | Task | Arquivo | Dev | Status | Estimativa |
 |------|---------|-----|--------|------------|
-| T1 | [T1.md](T1.md) | API Dev 1 | ⏳ | ~25 min |
-| T2 | [T2.md](T2.md) | API Dev 1 | ⏳ | ~35 min |
-| T3 | [T3.md](T3.md) | API Dev 1 | ⏳ | ~40 min |
+| T1 | [T1.md](T1.md) | API Dev 1 | ✅ | ~25 min |
+| T2 | [T2.md](T2.md) | API Dev 1 | ✅ | ~35 min |
+| T3 | [T3.md](T3.md) | API Dev 1 | 🔄 | ~40 min |
 
 ## Contrato de saída
 

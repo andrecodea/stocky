@@ -6,22 +6,24 @@
 
 ## Objetivo POC
 
-Integrar LangChain com OpenRouter para entregar **2 features de IA demonstráveis**:
+Integrar LangChain com OpenRouter para entregar **3 features de IA demonstráveis**:
 1. Recomendação de reposição baseada no estoque atual
-2. Identificação de produto por foto (OCR/visão)
+2. Chat com agente de estoque (histórico, busca web via Tavily)
+3. Identificação de produto por foto (OCR/visão)
 
 ## Tasks
 
 | Task | Arquivo | Dev | Status | Estimativa |
 |------|---------|-----|--------|------------|
-| T1 | [T1.md](T1.md) | API Dev 1 | ⏳ | ~30 min |
-| T2 | [T2.md](T2.md) | API Dev 1 | ⏳ | ~40 min |
-| T3 | [T3.md](T3.md) | API Dev 1 | ⏳ | ~35 min |
+| T1 | [T1.md](T1.md) | API Dev 1 | ✅ | ~30 min |
+| T2 | [T2.md](T2.md) | API Dev 1 | ✅ | ~40 min |
+| T3 | [T3.md](T3.md) | API Dev 1 | 🔄 | ~35 min |
 
 ## Contrato de saída
 
 - `POST /ia/recomendar-reposicao` retorna JSON com produtos e quantidades sugeridas
-- `POST /ia/identificar-produto` aceita base64 de imagem, retorna nome + campos extraídos
+- `POST /ia/chat` aceita mensagem + histórico, retorna resposta do agente
+- `POST /ia/identificar-produto` aceita imagem, retorna nome + campos extraídos
 - Modelo de linguagem configurável via `.env` (sem hardcode)
 
 ## Próximo sprint

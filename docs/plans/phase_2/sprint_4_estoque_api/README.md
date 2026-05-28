@@ -12,9 +12,9 @@ Implementar todos os endpoints CRUD de produtos e movimentações, com lógica d
 
 | Task | Arquivo | Dev | Status | Estimativa |
 |------|---------|-----|--------|------------|
-| T1 | [T1.md](T1.md) | API Dev 1 | ⏳ | ~30 min |
-| T2 | [T2.md](T2.md) | API Dev 1 | ⏳ | ~40 min |
-| T3 | [T3.md](T3.md) | API Dev 1 | ⏳ | ~35 min |
+| T1 | [T1.md](T1.md) | API Dev 1 | ✅ | ~30 min |
+| T2 | [T2.md](T2.md) | API Dev 1 | 🔄 | ~40 min |
+| T3 | [T3.md](T3.md) | API Dev 1 | 🔄 | ~35 min |
 
 ## Contrato de saída
 
