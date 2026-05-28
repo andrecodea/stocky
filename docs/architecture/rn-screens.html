@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+body { background: #1a1a1a; padding: 20px; font-family: 'Segoe UI', system-ui, sans-serif; color: #e0e0e0; }
+h2 { font-size: 16px; margin-bottom: 4px; }
+.subtitle { color: #666; font-size: 12px; margin-bottom: 14px; display: block; }
+.pages-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #555; margin-bottom: 6px; }
+.page-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
+.page-tab { font-size: 11px; padding: 5px 12px; border-radius: 6px; border: 1px solid #2a2a2a; background: #111; color: #777; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+.page-tab .material-icons { font-size: 14px; }
+.page-tab.active { background: #1a3a1a; color: #4ade80; border-color: #2a5a2a; }
+.page-tab:hover:not(.active) { color: #bbb; border-color: #444; }
+
+.phone-wrap { display: flex; justify-content: center; }
+.phone { width: 320px; background: #0d0d0d; border-radius: 36px; border: 2px solid #2a2a2a; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.7); display: flex; flex-direction: column; height: 640px; position: relative; }
+.status-bar { background: #0d0d0d; padding: 10px 20px 4px; display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: #888; flex-shrink: 0; }
+.status-bar .material-icons { font-size: 12px; }
+.app-bar { background: #111; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #1e1e1e; flex-shrink: 0; }
+.app-bar h3 { font-size: 15px; font-weight: 700; color: #fff; margin: 0; }
+.app-bar .material-icons { color: #888; font-size: 20px; cursor: pointer; }
+.app-bar-left { display: flex; align-items: center; gap: 8px; }
+.screen-body { flex: 1; overflow-y: auto; padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; }
+.screen-body::-webkit-scrollbar { width: 3px; }
+.screen-body::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 2px; }
+.bottom-nav { background: #111; border-top: 1px solid #1e1e1e; display: flex; padding: 6px 0 10px; flex-shrink: 0; }
+.nav-tab { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; padding: 4px 0; position: relative; }
+.nav-tab .material-icons { font-size: 22px; color: #444; }
+.nav-tab span.label { font-size: 9px; color: #444; }
+.nav-tab.active .material-icons { color: #4ade80; }
+.nav-tab.active span.label { color: #4ade80; }
+.nav-tab .badge { position: absolute; background: #ef4444; color: #fff; font-size: 8px; padding: 1px 4px; border-radius: 8px; font-weight: 700; top: 0; right: 20%; }
+
+.card { background: #111; border: 1px solid #1e1e1e; border-radius: 10px; padding: 12px; }
+.card-title { font-size: 11px; font-weight: 600; color: #888; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+.card-title .material-icons { font-size: 14px; }
+.kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.kpi-mini { background: #161616; border: 1px solid #1e1e1e; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 3px; }
+.kpi-mini-label { font-size: 9px; color: #555; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 3px; }
+.kpi-mini-label .material-icons { font-size: 11px; }
+.kpi-mini-value { font-size: 18px; font-weight: 700; color: #e0e0e0; }
+.kpi-mini-delta { font-size: 9px; display: flex; align-items: center; gap: 2px; }
+.kpi-mini-delta .material-icons { font-size: 10px; }
+.up { color: #4ade80; } .down { color: #ef4444; } .flat { color: #666; }
+.alert-row { display: flex; align-items: flex-start; gap: 8px; background: #161616; border-radius: 8px; padding: 10px; border: 1px solid #1e1e1e; }
+.alert-row .material-icons { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.alert-row.crit { border-color: #3a1010; } .alert-row.crit .material-icons { color: #ef4444; }
+.alert-row.warn { border-color: #3a2a10; } .alert-row.warn .material-icons { color: #fbbf24; }
+.alert-row strong { display: block; font-size: 12px; color: #ddd; margin-bottom: 2px; }
+.alert-row span { font-size: 10px; color: #777; }
+.insight-row { display: flex; gap: 7px; align-items: flex-start; background: #161616; border-radius: 8px; padding: 9px; }
+.agent-chip { font-size: 9px; padding: 2px 7px; border-radius: 10px; font-weight: 700; white-space: nowrap; flex-shrink: 0; margin-top: 1px; }
+.chip-e { background: #0f2a0f; color: #4ade80; } .chip-c { background: #0a1a2a; color: #60a5fa; } .chip-f { background: #2a1e0a; color: #fbbf24; }
+.insight-row p { font-size: 11px; color: #999; margin: 0; line-height: 1.4; }
+.product-row { display: flex; align-items: center; gap: 10px; background: #161616; border-radius: 8px; padding: 10px 12px; }
+.product-thumb { width: 36px; height: 36px; border-radius: 6px; background: #222; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.product-thumb .material-icons { font-size: 20px; color: #444; }
+.product-info { flex: 1; }
+.product-info strong { display: block; font-size: 12px; color: #ddd; }
+.product-info span { font-size: 10px; color: #666; }
+.stock-chip { font-size: 10px; padding: 3px 8px; border-radius: 8px; font-weight: 600; white-space: nowrap; }
+.s-crit { background: #2a0a0a; color: #ef4444; } .s-low { background: #2a1e0a; color: #fbbf24; } .s-ok { background: #0a2a0a; color: #4ade80; }
+.search-bar { display: flex; align-items: center; gap: 8px; background: #161616; border: 1px solid #222; border-radius: 10px; padding: 8px 12px; }
+.search-bar .material-icons { font-size: 18px; color: #555; }
+.search-bar input { flex: 1; background: none; border: none; outline: none; color: #ccc; font-size: 12px; }
+.fab { position: absolute; bottom: 72px; right: 16px; width: 44px; height: 44px; background: #4ade80; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(74,222,128,0.4); cursor: pointer; z-index: 10; }
+.fab .material-icons { font-size: 20px; color: #0d0d0d; }
+.section-hdr { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #444; margin-bottom: 2px; margin-top: 2px; }
+.chat-msg-user { align-self: flex-end; background: #1a3a1a; color: #c8f0d8; border-radius: 10px 10px 2px 10px; padding: 8px 10px; font-size: 11px; max-width: 80%; margin-bottom: 6px; }
+.chat-msg-bot { align-self: flex-start; background: #1a1a1a; color: #bbb; border-radius: 10px 10px 10px 2px; padding: 8px 10px; font-size: 11px; max-width: 85%; line-height: 1.4; margin-bottom: 6px; }
+.chat-input-row { display: flex; gap: 8px; align-items: center; background: #111; border: 1px solid #222; border-radius: 10px; padding: 8px 12px; }
+.chat-input-row .material-icons { color: #4ade80; font-size: 20px; }
+.chat-input-row input { flex:1; background:none; border:none; outline:none; color:#ccc; font-size:11px; }
+
+/* MOVIMENTAÇÕES SPECIFIC */
+.mov-type-row { display: flex; gap: 8px; }
+.mov-type-btn { flex: 1; border-radius: 10px; padding: 14px 8px; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; border: 1px solid #222; background: #161616; }
+.mov-type-btn .material-icons { font-size: 26px; }
+.mov-type-btn span { font-size: 11px; font-weight: 600; }
+.mov-type-btn.entrada { border-color: #1e4a1e; background: #0f1f0f; }
+.mov-type-btn.entrada .material-icons { color: #4ade80; }
+.mov-type-btn.entrada span { color: #4ade80; }
+.mov-type-btn.saida { border-color: #4a1e1e; background: #1f0f0f; }
+.mov-type-btn.saida .material-icons { color: #ef4444; }
+.mov-type-btn.saida span { color: #ef4444; }
+.mov-type-btn.ajuste { border-color: #1e2a4a; background: #0f141f; }
+.mov-type-btn.ajuste .material-icons { color: #818cf8; }
+.mov-type-btn.ajuste span { color: #818cf8; }
+
+.scan-methods { display: flex; gap: 8px; }
+.scan-btn { flex: 1; background: #161616; border: 1px solid #2a2a2a; border-radius: 10px; padding: 12px; display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; }
+.scan-btn .material-icons { font-size: 22px; }
+.scan-btn span { font-size: 10px; color: #666; text-align: center; line-height: 1.3; }
+.scan-btn.barcode .material-icons { color: #4ade80; }
+.scan-btn.photo .material-icons { color: #60a5fa; }
+.scan-btn .tag { font-size: 9px; padding: 1px 5px; border-radius: 4px; font-weight: 600; }
+.scan-btn.barcode .tag { background: #0f2a0f; color: #4ade80; }
+.scan-btn.photo .tag { background: #0a1a2a; color: #60a5fa; }
+
+.product-found { background: #0f1f0f; border: 1px solid #1e4a1e; border-radius: 10px; padding: 12px; }
+.qty-row { display: flex; align-items: center; gap: 12px; justify-content: center; margin-top: 8px; }
+.qty-btn { width: 32px; height: 32px; background: #1a3a1a; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.qty-btn .material-icons { font-size: 18px; color: #4ade80; }
+.qty-value { font-size: 24px; font-weight: 700; color: #fff; width: 40px; text-align: center; }
+
+.hist-row { display: flex; align-items: center; gap: 10px; padding: 9px 12px; background: #161616; border-radius: 8px; }
+.hist-icon { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.hist-icon.e { background: #0f2a0f; } .hist-icon.e .material-icons { color: #4ade80; font-size: 16px; }
+.hist-icon.s { background: #2a0f0f; } .hist-icon.s .material-icons { color: #ef4444; font-size: 16px; }
+.hist-info { flex: 1; }
+.hist-info strong { display: block; font-size: 11px; color: #ddd; }
+.hist-info span { font-size: 10px; color: #555; }
+.hist-qty { font-size: 12px; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<h2>Stocky Mobile — React Native (Expo) v2</h2>
+<span class="subtitle">Scan → feature de Movimentações · Barcode (DB) ou Foto (Gemini → DB)</span>
+
+<div class="pages-label">Selecione a tela</div>
+<div class="page-tabs">
+  <div class="page-tab active" onclick="showPage('home',this)"><span class="material-icons">home</span> Home</div>
+  <div class="page-tab" onclick="showPage('estoque',this)"><span class="material-icons">inventory_2</span> Estoque</div>
+  <div class="page-tab" onclick="showPage('movimentacoes',this)"><span class="material-icons">swap_horiz</span> Movimentações</div>
+  <div class="page-tab" onclick="showPage('mov-scan',this)"><span class="material-icons">qr_code_scanner</span> → Scan</div>
+  <div class="page-tab" onclick="showPage('mov-confirm',this)"><span class="material-icons">check_circle</span> → Confirmar</div>
+  <div class="page-tab" onclick="showPage('alertas',this)"><span class="material-icons">notifications</span> Alertas</div>
+  <div class="page-tab" onclick="showPage('copilot',this)"><span class="material-icons">smart_toy</span> Copilot</div>
+</div>
+
+<div class="phone-wrap"><div class="phone">
+  <div class="status-bar">
+    <span>9:41</span>
+    <div style="display:flex;gap:4px;align-items:center"><span class="material-icons">wifi</span><span class="material-icons">signal_cellular_4_bar</span><span class="material-icons">battery_full</span></div>
+  </div>
+
+  <!-- HOME -->
+  <div id="page-home" style="display:flex;flex-direction:column;flex:1;overflow:hidden">
+    <div class="app-bar">
+      <div class="app-bar-left">
+        <div style="width:28px;height:28px;background:#1e3a1e;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;color:#4ade80;font-weight:700">A</div>
+        <h3>Stocky</h3>
+      </div>
+      <span class="material-icons">notifications_none</span>
+    </div>
+    <div class="screen-body">
+      <div style="font-size:13px;color:#888">Bom dia, <strong style="color:#ddd">André</strong> 👋</div>
+      <div class="kpi-grid">
+        <div class="kpi-mini"><div class="kpi-mini-label"><span class="material-icons">inventory_2</span> Produtos</div><div class="kpi-mini-value">247</div><div class="kpi-mini-delta up"><span class="material-icons">arrow_upward</span> 3 hoje</div></div>
+        <div class="kpi-mini"><div class="kpi-mini-label"><span class="material-icons">warning</span> Alertas</div><div class="kpi-mini-value" style="color:#ef4444">3</div><div class="kpi-mini-delta down"><span class="material-icons">arrow_upward</span> críticos</div></div>
+        <div class="kpi-mini"><div class="kpi-mini-label"><span class="material-icons">swap_horiz</span> Mov. hoje</div><div class="kpi-mini-value">14</div><div class="kpi-mini-delta flat"><span class="material-icons">remove</span> normal</div></div>
+        <div class="kpi-mini"><div class="kpi-mini-label"><span class="material-icons">percent</span> Margem</div><div class="kpi-mini-value">34%</div><div class="kpi-mini-delta up"><span class="material-icons">arrow_upward</span> 2pp</div></div>
+      </div>
+      <div class="section-hdr">Alertas urgentes</div>
+      <div class="alert-row crit"><span class="material-icons">error</span><div><strong>Arroz 5kg</strong><span>8 un · ruptura em ~16h</span></div></div>
+      <div class="alert-row warn"><span class="material-icons">warning</span><div><strong>Óleo de Soja</strong><span>22 un · abaixo do mínimo</span></div></div>
+      <div class="section-hdr">Insights</div>
+      <div class="insight-row"><span class="agent-chip chip-e">Estoque</span><p>3 anomalias detectadas nas movimentações de ontem</p></div>
+      <div class="insight-row"><span class="agent-chip chip-c">Comercial</span><p>Demanda de bebidas +22% prevista essa semana</p></div>
+    </div>
+    <div class="fab" onclick="showPage('copilot')"><span class="material-icons">smart_toy</span></div>
+    <div class="bottom-nav">
+      <div class="nav-tab active" onclick="showPage('home')"><span class="material-icons">home</span><span class="label">Home</span></div>
+      <div class="nav-tab" onclick="showPage('estoque')"><span class="material-icons">inventory_2</span><span class="label">Estoque</span></div>
+      <div class="nav-tab" onclick="showPage('movimentacoes')"><span class="material-icons">swap_horiz</span><span class="label">Mov.</span></div>
+      <div class="nav-tab" onclick="showPage('alertas')" style="position:relative"><span class="material-icons">notifications</span><span class="label">Alertas</span><div class="badge">3</div></div>
+    </div>
+  </div>
+
+  <!-- ESTOQUE -->
+  <div id="page-estoque" style="display:none;flex-direction:column;flex:1;overflow:hidden">
+    <div class="app-bar"><h3>Estoque</h3><div style="display:flex;gap:8px"><span class="material-icons">filter_list</span><span class="material-icons">add</span></div></div>
+    <div class="screen-body">
+      <div class="search-bar"><span class="material-icons">search</span><input placeholder="Buscar produto ou SKU..."></div>
+      <div class="section-hdr">Críticos</div>
+      <div class="product-row"><div class="product-thumb"><span class="material-icons">inventory_2</span></div><div class="product-info"><strong>Arroz Tipo 1 5kg</strong><span>SKU: ARR-001 · 8 un</span></div><span class="stock-chip s-crit">Crítico</span></div>
+      <div class="product-row"><div class="product-thumb"><span class="material-icons">opacity</span></div><div class="product-info"><strong>Óleo de Soja 900ml</strong><span>SKU: OLE-002 · 22 un</span></div><span class="stock-chip s-low">Baixo</span></div>
+      <div class="section-hdr">OK</div>
+      <div class="product-row"><div class="product-thumb"><span class="material-icons">set_meal</span></div><div class="product-info"><strong>Feijão Carioca 1kg</strong><span>SKU: FEI-003 · 143 un</span></div><span class="stock-chip s-ok">OK</span></div>
+      <div class="product-row"><div class="product-thumb"><span class="material-icons">local_drink</span></div><div class="product-info"><strong>Refrigerante 2L</strong><span>SKU: REF-004 · 87 un</span></div><span class="stock-chip s-ok">OK</span></div>
+    </div>
+    <div class="fab" onclick="showPage('copilot')"><span class="material-icons">smart_toy</span></div>
+    <div class="bottom-nav">
+      <div class="nav-tab" onclick="showPage('home')"><span class="material-icons">home</span><span class="label">Home</span></div>
+      <div class="nav-tab active"><span class="material-icons">inventory_2</span><span class="label">Estoque</span></div>
+      <div class="nav-tab" onclick="showPage('movimentacoes')"><span class="material-icons">swap_horiz</span><span class="label">Mov.</span></div>
+      <div class="nav-tab" onclick="showPage('alertas')" style="position:relative"><span class="material-icons">notifications</span><span class="label">Alertas</span><div class="badge">3</div></div>
+    </div>
+  </div>
+
+  <!-- MOVIMENTAÇÕES -->
+  <div id="page-movimentacoes" style="display:none;flex-direction:column;flex:1;overflow:hidden">
+    <div class="app-bar"><h3>Movimentações</h3><span class="material-icons">history</span></div>
+    <div class="screen-body">
+      <div class="section-hdr">Registrar movimentação</div>
+      <div class="mov-type-row">
+        <div class="mov-type-btn entrada" onclick="showPage('mov-scan')">
+          <span class="material-icons">add_circle</span>
+          <span>Entrada</span>
+        </div>
+        <div class="mov-type-btn saida" onclick="showPage('mov-scan')">
+          <span class="material-icons">remove_circle</span>
+          <span>Saída</span>
+        </div>
+        <div class="mov-type-btn ajuste" onclick="showPage('mov-scan')">
+          <span class="material-icons">tune</span>
+          <span>Ajuste</span>
+        </div>
+      </div>
+      <div class="section-hdr">Histórico de hoje</div>
+      <div class="hist-row"><div class="hist-icon e"><span class="material-icons">add</span></div><div class="hist-info"><strong>Feijão Carioca 1kg</strong><span>Entrada · SKU FEI-003 · 09:12</span></div><span class="hist-qty up">+50</span></div>
+      <div class="hist-row"><div class="hist-icon s"><span class="material-icons">remove</span></div><div class="hist-info"><strong>Refrigerante 2L</strong><span>Saída · SKU REF-004 · 08:44</span></div><span class="hist-qty down">-12</span></div>
+      <div class="hist-row"><div class="hist-icon e"><span class="material-icons">add</span></div><div class="hist-info"><strong>Óleo de Soja 900ml</strong><span>Entrada · SKU OLE-002 · 08:20</span></div><span class="hist-qty up">+30</span></div>
+      <div style="font-size:11px;color:#333;text-align:center;padding:4px">+ 11 movimentações</div>
+    </div>
+    <div class="fab" onclick="showPage('copilot')"><span class="material-icons">smart_toy</span></div>
+    <div class="bottom-nav">
+      <div class="nav-tab" onclick="showPage('home')"><span class="material-icons">home</span><span class="label">Home</span></div>
+      <div class="nav-tab" onclick="showPage('estoque')"><span class="material-icons">inventory_2</span><span class="label">Estoque</span></div>
+      <div class="nav-tab active"><span class="material-icons">swap_horiz</span><span class="label">Mov.</span></div>
+      <div class="nav-tab" onclick="showPage('alertas')" style="position:relative"><span class="material-icons">notifications</span><span class="label">Alertas</span><div class="badge">3</div></div>
+    </div>
+  </div>
+
+  <!-- MOV → SCAN (sub-tela) -->
+  <div id="page-mov-scan" style="display:none;flex-direction:column;flex:1;overflow:hidden">
+    <div class="app-bar">
+      <div class="app-bar-left"><span class="material-icons" onclick="showPage('movimentacoes')" style="cursor:pointer">arrow_back</span><h3>Identificar produto</h3></div>
+    </div>
+    <div class="screen-body">
+      <div style="font-size:11px;color:#666;text-align:center">Como deseja identificar o produto?</div>
+      <div class="scan-methods">
+        <div class="scan-btn barcode" onclick="showPage('mov-confirm')">
+          <span class="material-icons">qr_code_scanner</span>
+          <span>Código de barras / QR</span>
+          <span class="tag">DB lookup</span>
+        </div>
+        <div class="scan-btn photo" onclick="showPage('mov-confirm')">
+          <span class="material-icons">photo_camera</span>
+          <span>Foto do produto</span>
+          <span class="tag">Gemini → DB</span>
+        </div>
+      </div>
+      <div class="search-bar"><span class="material-icons">search</span><input placeholder="Buscar por nome ou SKU..."></div>
+      <div class="section-hdr">Últimas movimentações</div>
+      <div class="hist-row" onclick="showPage('mov-confirm')" style="cursor:pointer">
+        <div class="hist-icon e"><span class="material-icons">add</span></div>
+        <div class="hist-info"><strong>Feijão Carioca 1kg</strong><span>Entrada · SKU FEI-003 · 09:12</span></div>
+        <span class="hist-qty up">+50</span>
+      </div>
+      <div class="hist-row" onclick="showPage('mov-confirm')" style="cursor:pointer">
+        <div class="hist-icon s"><span class="material-icons">remove</span></div>
+        <div class="hist-info"><strong>Refrigerante 2L</strong><span>Saída · SKU REF-004 · 08:44</span></div>
+        <span class="hist-qty down">-12</span>
+      </div>
+      <div class="hist-row" onclick="showPage('mov-confirm')" style="cursor:pointer">
+        <div class="hist-icon e"><span class="material-icons">add</span></div>
+        <div class="hist-info"><strong>Óleo de Soja 900ml</strong><span>Entrada · SKU OLE-002 · 08:20</span></div>
+        <span class="hist-qty up">+30</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOV → CONFIRMAR (sub-tela) -->
+  <div id="page-mov-confirm" style="display:none;flex-direction:column;flex:1;overflow:hidden">
+    <div class="app-bar">
+      <div class="app-bar-left"><span class="material-icons" onclick="showPage('mov-scan')" style="cursor:pointer">arrow_back</span><h3>Confirmar entrada</h3></div>
+    </div>
+    <div class="screen-body">
+      <div class="product-found">
+        <div class="card-title" style="color:#4ade80"><span class="material-icons">check_circle</span> Produto identificado</div>
+        <div class="product-row" style="background:#0a0a0a;border:none;padding:0;margin-bottom:8px">
+          <div class="product-thumb"><span class="material-icons">inventory_2</span></div>
+          <div class="product-info"><strong>Arroz Tipo 1 5kg</strong><span>SKU: ARR-001 · EAN: 7896038302 · Estoque atual: 8 un</span></div>
+        </div>
+        <div style="font-size:10px;color:#555;display:flex;gap:12px">
+          <span>Identificado via <strong style="color:#4ade80">barcode</strong></span>
+          <span>Confiança: <strong style="color:#4ade80">100%</strong></span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="material-icons">pin</span> Quantidade</div>
+        <div class="qty-row">
+          <div class="qty-btn"><span class="material-icons">remove</span></div>
+          <div class="qty-value">50</div>
+          <div class="qty-btn"><span class="material-icons">add</span></div>
+        </div>
+        <div style="font-size:10px;color:#555;text-align:center;margin-top:6px">Novo total após entrada: <strong style="color:#4ade80">58 unidades</strong></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="material-icons">notes</span> Observação (opcional)</div>
+        <div style="background:#161616;border:1px solid #222;border-radius:8px;padding:8px;font-size:11px;color:#555">Nota fiscal, fornecedor, lote...</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <div style="flex:1;background:#161616;border:1px solid #222;border-radius:10px;padding:12px;text-align:center;font-size:12px;color:#888;cursor:pointer">Cancelar</div>
+        <div style="flex:2;background:#162416;border:1px solid #2a4a2a;border-radius:10px;padding:12px;text-align:center;font-size:12px;color:#4ade80;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><span class="material-icons" style="font-size:16px">check</span> Confirmar entrada</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ALERTAS -->
+  <div id="page-alertas" style="display:none;flex-direction:column;flex:1;overflow:hidden">
+    <div class="app-bar"><h3>Alertas</h3><span class="material-icons">done_all</span></div>
+    <div class="screen-body">
+      <div class="section-hdr">Críticos</div>
+      <div class="alert-row crit"><span class="material-icons">error</span><div><strong>Arroz 5kg — ruptura iminente</strong><span>8 un · giro 12un/dia · há 2 min</span></div></div>
+      <div class="section-hdr">Atenção</div>
+      <div class="alert-row warn"><span class="material-icons">warning</span><div><strong>Óleo de Soja 900ml</strong><span>22 un · mínimo é 30</span></div></div>
+      <div class="alert-row warn"><span class="material-icons">warning</span><div><strong>Feijão Carioca</strong><span>Reposição recomendada em 3 dias</span></div></div>
+      <div class="section-hdr">Insights</div>
+      <div class="insight-row"><span class="agent-chip chip-e">Estoque</span><p>Anomalia em movimentação de Leite Integral — ontem 18h</p></div>
+      <div class="insight-row"><span class="agent-chip chip-f">Financeiro</span><p>Margem de laticínios caiu 4pp em 7 dias</p></div>
+      <div class="insight-row"><span class="agent-chip chip-c">Comercial</span><p>Demanda de bebidas +22% prevista essa semana</p></div>
+    </div>
+    <div class="fab" onclick="showPage('copilot')"><span class="material-icons">smart_toy</span></div>
+    <div class="bottom-nav">
+      <div class="nav-tab" onclick="showPage('home')"><span class="material-icons">home</span><span class="label">Home</span></div>
+      <div class="nav-tab" onclick="showPage('estoque')"><span class="material-icons">inventory_2</span><span class="label">Estoque</span></div>
+      <div class="nav-tab" onclick="showPage('movimentacoes')"><span class="material-icons">swap_horiz</span><span class="label">Mov.</span></div>
+      <div class="nav-tab active"><span class="material-icons">notifications</span><span class="label">Alertas</span></div>
+    </div>
+  </div>
+
+  <!-- COPILOT -->
+  <div id="page-copilot" style="display:none;flex-direction:column;flex:1;overflow:hidden">
+    <div class="app-bar">
+      <div class="app-bar-left"><span class="material-icons" onclick="showPage('home')" style="cursor:pointer">arrow_back</span><h3>Stocky Copilot</h3></div>
+      <span class="material-icons">more_vert</span>
+    </div>
+    <div class="screen-body" style="justify-content:flex-end">
+      <div style="font-size:10px;color:#333;text-align:center;margin-bottom:4px">Hoje, 09:41</div>
+      <div class="chat-msg-bot">Olá André! Posso ajudar com estoque, alertas, margens ou qualquer decisão operacional.</div>
+      <div class="chat-msg-user">Qual produto devo repor agora?</div>
+      <div class="chat-msg-bot"><strong style="color:#ddd">Arroz Tipo 1 5kg</strong> — prioridade máxima. 8 unidades, giro de 12un/dia, ruptura em ~16h. Acione pedido de emergência com Fornecedor A.</div>
+      <div class="chat-input-row"><input placeholder="Pergunte sobre estoque..."><span class="material-icons">send</span></div>
+    </div>
+  </div>
+
+</div></div>
+
+<script>
+const pages = ['home','estoque','movimentacoes','mov-scan','mov-confirm','alertas','copilot'];
+function showPage(id, tabEl) {
+  pages.forEach(p => { document.getElementById('page-'+p).style.display = 'none'; });
+  const el = document.getElementById('page-'+id);
+  el.style.display = 'flex';
+  el.style.flexDirection = 'column';
+  el.style.flex = '1';
+  el.style.overflow = 'hidden';
+  if (tabEl) { document.querySelectorAll('.page-tab').forEach(t => t.classList.remove('active')); tabEl.classList.add('active'); }
+}
+showPage('home');
+</script>
+</body>
+</html>
