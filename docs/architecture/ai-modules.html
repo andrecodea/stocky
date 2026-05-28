@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stocky — AI Modules</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0d0d0d; color: #e0e0e0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    padding: 40px 32px; max-width: 1000px; margin: 0 auto;
+  }
+  h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .meta { font-size: 12px; color: #666; margin-bottom: 28px; }
+
+  .feed-note {
+    display: flex; gap: 12px; align-items: flex-start;
+    background: #0a1a0a; border: 1px solid #1e4a2a;
+    border-radius: 8px; padding: 12px 16px; margin-bottom: 20px;
+  }
+  .feed-note p { font-size: 12px; color: #9ecf9e; line-height: 1.6; }
+  .feed-note strong { color: #6fef9f; }
+
+  .ai-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  .ai-card {
+    border-radius: 10px; padding: 16px; border: 1px solid #333;
+    background: #111; display: flex; flex-direction: column; gap: 10px;
+  }
+  .ai-card.full-width { grid-column: 1 / -1; }
+  .card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+  .card-header h3 { font-size: 14px; font-weight: 700; margin: 0 0 3px 0; }
+  .card-header p  { font-size: 11px; color: #888; margin: 0; line-height: 1.4; }
+
+  .trigger {
+    font-size: 10px; padding: 3px 9px; border-radius: 20px;
+    white-space: nowrap; flex-shrink: 0; font-weight: 600;
+  }
+  .t-webhook { background: #1a3a1a; color: #6fef9f; border: 1px solid #2a6a3a; }
+  .t-cron    { background: #1a1a3a; color: #8aabff; border: 1px solid #2a3a7a; }
+  .t-both    { background: #1a2a2a; color: #88eeff; border: 1px solid #2a5a5a; }
+  .t-user    { background: #3a1a1a; color: #ffaa88; border: 1px solid #7a3a2a; }
+
+  .new-badge {
+    font-size: 10px; color: #ffcc88; background: #3a2a10;
+    padding: 2px 6px; border-radius: 4px; margin-left: 6px;
+    font-weight: 600; vertical-align: middle;
+  }
+
+  .subagents { display: flex; flex-direction: column; gap: 6px; }
+  .section-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1px; color: #555;
+  }
+  .subagent {
+    display: flex; align-items: flex-start; gap: 8px;
+    background: #1a1a1a; border-radius: 6px; padding: 8px 10px;
+  }
+  .subagent-icon { font-size: 14px; flex-shrink: 0; padding-top: 1px; }
+  .subagent strong { font-size: 12px; display: block; margin-bottom: 2px; }
+  .subagent span   { font-size: 11px; color: #777; line-height: 1.4; }
+
+  .output {
+    background: #0d1a0d; border: 1px solid #1e3a1e; border-radius: 6px;
+    padding: 8px 10px; font-family: 'Courier New', monospace;
+    font-size: 10.5px; color: #6fef9f; line-height: 1.5;
+  }
+
+  /* RAG */
+  .rag-card { background: #14082a; border-color: #4a1a7a !important; }
+  .rag-pipeline { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+  .rag-step {
+    background: #28103a; border: 1px solid #5a1e8c; border-radius: 6px;
+    padding: 8px 10px; font-size: 11px; text-align: center; flex: 1; min-width: 80px;
+  }
+  .rag-step strong { display: block; font-size: 12px; margin-bottom: 3px; }
+  .rag-step span   { color: #b88eff; font-size: 10px; }
+  .rag-arrow { color: #555; font-size: 16px; flex-shrink: 0; }
+  .rag-sources { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+  .rag-source {
+    display: flex; align-items: center; gap: 7px; flex: 1; min-width: 140px;
+    background: #28103a; border-radius: 6px; padding: 7px 10px;
+  }
+  .rag-source strong { font-size: 12px; display: block; }
+  .rag-source span   { font-size: 10px; color: #b88eff; }
+
+  .notes {
+    background: #111; border: 1px solid #222; border-radius: 8px;
+    padding: 14px 16px; margin-top: 6px;
+  }
+  .notes h3 { font-size: 11px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+  .notes ul { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .notes li { font-size: 12px; color: #888; padding-left: 16px; position: relative; line-height: 1.5; }
+  .notes li::before { content: '→'; position: absolute; left: 0; color: #444; }
+  .notes li strong { color: #bbb; }
+</style>
+</head>
+<body>
+
+<h1>Stocky — AI Modules</h1>
+<p class="meta">Last updated: 2026-05-28 · Pattern: Deep Agents (LangGraph) per module + RAG Chat · HR out of scope</p>
+
+<!-- INTER-AGENT NOTE -->
+<div class="feed-note">
+  <span style="font-size:22px;flex-shrink:0">🔗</span>
+  <p><strong>ComercialAgent → EstoqueAgent + SupplyChainAgent:</strong> sales velocity and demand forecast data produced by ComercialAgent are consumed by EstoqueAgent (restock quantity) and SupplyChainAgent (seasonality). Agents are decoupled — they communicate via Supabase records, not direct calls.</p>
+</div>
+
+<div class="ai-grid">
+
+  <!-- EstoqueAgent -->
+  <div class="ai-card" style="border-color:#1e5a3a">
+    <div class="card-header">
+      <div><h3>📦 EstoqueAgent</h3><p>Monitors stock levels, detects anomalies, generates restock alerts</p></div>
+      <span class="trigger t-webhook">DB Webhook</span>
+    </div>
+    <div class="subagents">
+      <div class="section-label">Managed Subagents</div>
+      <div class="subagent"><div class="subagent-icon">🔍</div><div><strong>AnomalyDetector</strong><span>Finds outliers in stock movements (breakage, theft, input errors)</span></div></div>
+      <div class="subagent"><div class="subagent-icon">📊</div><div><strong>RestockAdvisor</strong><span>Calculates optimal restock quantity per product using sales velocity from ComercialAgent</span></div></div>
+      <div class="subagent"><div class="subagent-icon">🔔</div><div><strong>AlertDispatcher</strong><span>Writes structured alerts to Supabase → Realtime pushes to frontend</span></div></div>
+    </div>
+    <div>
+      <div class="section-label" style="margin-bottom:5px">Output → Supabase <code>ai_logs</code></div>
+      <div class="output">{ "type": "restock_alert", "product_id": "uuid",<br>  "recommended_qty": 50, "urgency": "high" }</div>
+    </div>
+  </div>
+
+  <!-- ComercialAgent -->
+  <div class="ai-card" style="border-color:#7a5020">
+    <div class="card-header">
+      <div><h3>🛒 ComercialAgent <span class="new-badge">NEW</span></h3><p>Tracks sales velocity, forecasts demand, ranks top products</p></div>
+      <span class="trigger t-both">Webhook + cron</span>
+    </div>
+    <div class="subagents">
+      <div class="section-label">Managed Subagents</div>
+      <div class="subagent"><div class="subagent-icon">⚡</div><div><strong>SalesVelocityTracker</strong><span>Computes turnover rate per product, category and time window</span></div></div>
+      <div class="subagent"><div class="subagent-icon">📅</div><div><strong>DemandForecaster</strong><span>Short-term demand forecast based on historical sales + seasonality patterns</span></div></div>
+      <div class="subagent"><div class="subagent-icon">🏆</div><div><strong>TopProductsAnalyzer</strong><span>Rankings by revenue, margin and volume — feeds financial and supply chain modules</span></div></div>
+    </div>
+    <div>
+      <div class="section-label" style="margin-bottom:5px">Output → Supabase <code>ai_logs</code></div>
+      <div class="output">{ "type": "sales_report", "top_products": [...],<br>  "demand_forecast": {...}, "avg_turnover": 0.7 }</div>
+    </div>
+  </div>
+
+  <!-- FinanceiroAgent -->
+  <div class="ai-card" style="border-color:#7a6020">
+    <div class="card-header">
+      <div><h3>💰 FinancialAgent</h3><p>Analyzes margins, costs, losses and overall financial health</p></div>
+      <span class="trigger t-cron">pg_cron daily</span>
+    </div>
+    <div class="subagents">
+      <div class="section-label">Managed Subagents</div>
+      <div class="subagent"><div class="subagent-icon">📈</div><div><strong>MarginAnalyzer</strong><span>Gross margin per product and category</span></div></div>
+      <div class="subagent"><div class="subagent-icon">⚠️</div><div><strong>LossDetector</strong><span>Identifies losses, expired items, and dead stock</span></div></div>
+      <div class="subagent"><div class="subagent-icon">📋</div><div><strong>ReportWriter</strong><span>Produces daily markdown report saved to Supabase</span></div></div>
+    </div>
+    <div>
+      <div class="section-label" style="margin-bottom:5px">Output → Supabase <code>ai_logs</code></div>
+      <div class="output">{ "type": "daily_report", "avg_margin": 0.34,<br>  "top_losses": [...], "recommendations": [...] }</div>
+    </div>
+  </div>
+
+  <!-- LogísticaAgent -->
+  <div class="ai-card" style="border-color:#1a3a6a">
+    <div class="card-header">
+      <div><h3>🚚 LogisticsAgent</h3><p>Tracks stock movements between DCs and stores, optimizes transfers</p></div>
+      <span class="trigger t-webhook">DB Webhook</span>
+    </div>
+    <div class="subagents">
+      <div class="section-label">Managed Subagents</div>
+      <div class="subagent"><div class="subagent-icon">🗺️</div><div><strong>MovementTracker</strong><span>Validates and records inter-location transfers</span></div></div>
+      <div class="subagent"><div class="subagent-icon">⚡</div><div><strong>TransferOptimizer</strong><span>Suggests stock redistribution between units to avoid stockouts</span></div></div>
+    </div>
+    <div>
+      <div class="section-label" style="margin-bottom:5px">Output → Supabase <code>ai_logs</code></div>
+      <div class="output">{ "type": "transfer_suggestion",<br>  "from": "DC-SP", "to": "Store-RJ", "items": [...] }</div>
+    </div>
+  </div>
+
+  <!-- SupplyChainAgent -->
+  <div class="ai-card" style="border-color:#5a1a6a">
+    <div class="card-header">
+      <div><h3>🔗 SupplyChainAgent</h3><p>Evaluates suppliers, lead times, seasonality and rupture risk</p></div>
+      <span class="trigger t-cron">pg_cron weekly</span>
+    </div>
+    <div class="subagents">
+      <div class="section-label">Managed Subagents</div>
+      <div class="subagent"><div class="subagent-icon">🏭</div><div><strong>SupplierRanker</strong><span>Scores suppliers by reliability, price and delivery time</span></div></div>
+      <div class="subagent"><div class="subagent-icon">📅</div><div><strong>SeasonalityAnalyzer</strong><span>Detects seasonal demand patterns using ComercialAgent forecast data</span></div></div>
+      <div class="subagent"><div class="subagent-icon">🌐</div><div><strong>WebResearcher</strong><span>Market price benchmarking via Tavily web search</span></div></div>
+    </div>
+    <div>
+      <div class="section-label" style="margin-bottom:5px">Output → Supabase <code>ai_logs</code></div>
+      <div class="output">{ "type": "supplier_report",<br>  "rupture_risk": [...], "seasonality": {...} }</div>
+    </div>
+  </div>
+
+  <!-- RAG Chat -->
+  <div class="ai-card full-width rag-card">
+    <div class="card-header">
+      <div><h3 style="color:#edd8ff">🔍 RAG Chat — Reactive Q&amp;A</h3><p style="color:#b88eff">User asks a question → pgvector retrieves context → LLM generates answer</p></div>
+      <span class="trigger t-user">User input</span>
+    </div>
+    <div class="rag-pipeline">
+      <div class="rag-step"><strong>Query</strong><span>User message in chat</span></div>
+      <div class="rag-arrow">→</div>
+      <div class="rag-step"><strong>Embed</strong><span>text-embedding-3-small via OpenRouter</span></div>
+      <div class="rag-arrow">→</div>
+      <div class="rag-step"><strong>Retrieve</strong><span>Top-K chunks via pgvector cosine similarity</span></div>
+      <div class="rag-arrow">→</div>
+      <div class="rag-step"><strong>Augment</strong><span>System prompt + retrieved context + conversation history</span></div>
+      <div class="rag-arrow">→</div>
+      <div class="rag-step"><strong>Generate</strong><span>LLM response via OpenRouter</span></div>
+    </div>
+    <div class="section-label" style="margin-top:8px">Indexed in pgvector</div>
+    <div class="rag-sources">
+      <div class="rag-source"><span style="font-size:16px">📦</span><div><strong>Products + current stock</strong><span>one embedding per product</span></div></div>
+      <div class="rag-source"><span style="font-size:16px">📋</span><div><strong>Agent reports</strong><span>one embedding per report</span></div></div>
+      <div class="rag-source"><span style="font-size:16px">💳</span><div><strong>Financial movements</strong><span>embedded per period</span></div></div>
+      <div class="rag-source"><span style="font-size:16px">🛒</span><div><strong>Sales history</strong><span>embedded per period</span></div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- DESIGN NOTES -->
+<div class="notes">
+  <h3>Design Decisions</h3>
+  <ul>
+    <li><strong>HR is out of scope for agents.</strong> Team management (create users, assign Operator/Admin roles) is a Settings page — no dedicated agent, no AI needed.</li>
+    <li><strong>Event-driven, not user-triggered.</strong> Deep Agents run autonomously via Supabase DB webhooks (on data changes) or pg_cron schedules — frontend only consumes results via Realtime subscription.</li>
+    <li><strong>Agent decoupling via Supabase.</strong> ComercialAgent writes its output to <code>ai_logs</code>; EstoqueAgent and SupplyChainAgent read it from there. No direct inter-agent calls.</li>
+    <li><strong>RAG is separate from Deep Agents.</strong> Chat Q&amp;A requires low latency — pgvector retrieval + LLM is faster and simpler than spawning an agent. Deep Agents handle background analysis, RAG handles foreground conversation.</li>
+    <li><strong>All agent outputs are structured JSON</strong> saved to <code>ai_logs</code> table. Frontend queries and subscribes to this table — no agent-specific API endpoints needed.</li>
+  </ul>
+</div>
+
+</body>
+</html>
