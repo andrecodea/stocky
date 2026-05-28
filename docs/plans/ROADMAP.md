@@ -19,10 +19,12 @@
 
 | Sprint | Dev | Objetivo | Status |
 |--------|-----|----------|--------|
-| [[phase_1/sprint_1_supabase_schema]] | BD Dev 2 | Schema inicial, Auth, RLS base | ⏳ |
-| [[phase_1/sprint_2_fastapi_foundation]] | API Dev 1 | FastAPI setup, estrutura, Auth middleware | ⏳ |
+| [[phase_1/sprint_1_supabase_schema]] | BD Dev 2 | Schema inicial, Auth, RLS base | ✅ |
+| [[phase_1/sprint_2_fastapi_foundation]] | API Dev 1 | FastAPI setup, estrutura, Auth middleware | 🔄 |
 
 **Entregável semana 1:** `POST /auth/login` + `GET /me` funcionando. Schema `produtos`, `movimentacoes`, `perfis` no ar com RLS.
+
+> ✅ Schema + RLS + seed aplicados no Supabase Cloud. FastAPI com `/ping` e `/health` — auth e endpoints de negócio pendentes.
 
 ---
 
@@ -32,12 +34,14 @@
 
 | Sprint | Dev | Objetivo | Status |
 |--------|-----|----------|--------|
-| [[phase_2/sprint_3_estoque_bd]] | BD Dev 2 | Lotes, view estoque_atual, Storage, índices | ⏳ |
-| [[phase_2/sprint_4_estoque_api]] | API Dev 1 | CRUD produtos, movimentações, alertas, upload foto | ⏳ |
+| [[phase_2/sprint_3_estoque_bd]] | BD Dev 2 | Lotes, view estoque_atual, Storage, índices | ✅ |
+| [[phase_2/sprint_4_estoque_api]] | API Dev 1 | CRUD produtos, movimentações, alertas, upload foto | 🔄 |
 | [[phase_2/sprint_5_financeiro]] | BD Dev 2 + API Dev 1 | Schema financeiro + endpoints de margem | ⏳ |
-| [[phase_3/sprint_7_design]] | Frontend Dev 2 | Design system RN + telas de estoque | ⏳ |
+| [[phase_3/sprint_7_design]] | Frontend Dev 2 | Design system RN + telas de estoque | 🔄 |
 
 **Entregável semana 2:** App mobile com telas navegáveis (sem dados reais). API com endpoints de estoque e financeiro testáveis via Swagger.
+
+> ✅ View `estoque_atual` funcional. CRUD de produtos implementado como serviço Python (endpoints FastAPI pendentes). Design system entregue via Streamlit (MVP — React Native pós-POC). Módulo financeiro não iniciado.
 
 ---
 
@@ -47,15 +51,15 @@
 
 | Sprint | Dev | Objetivo | Status |
 |--------|-----|----------|--------|
-| [[phase_3/sprint_6_ai]] | API Dev 1 | LangChain + OpenRouter: recomendações + OCR básico | ⏳ |
-| [[phase_3/sprint_8_frontend_conn]] | Frontend Dev 1 | Auth flow + conectar endpoints de estoque e alertas | ⏳ |
+| [[phase_3/sprint_6_ai]] | API Dev 1 | LangChain + OpenRouter: recomendações + busca web | ✅ |
+| [[phase_3/sprint_8_frontend_conn]] | Frontend Dev 1 | Auth flow + conectar endpoints de estoque e alertas | ✅ |
 
 **Entregável semana 3 (POC demo):**
-- Login funcional no app
-- Lista de produtos com estoque real
-- Alertas de esgotamento funcionando
-- Ao menos 1 recomendação de reposição gerada por IA
-- Tela de cadastro de produto por foto (OCR) demonstrável
+- ~~Login funcional no app~~ *(auth adiado para pós-POC)*
+- ✅ Lista de produtos com estoque real
+- ✅ Alertas de esgotamento funcionando
+- ✅ Recomendações de reposição geradas por IA (LangChain + OpenRouter + Tavily)
+- ⏳ Cadastro de produto por foto (OCR) — pendente
 
 ---
 
