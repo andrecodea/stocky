@@ -8,16 +8,16 @@ Refatorar FastAPI com JWT middleware real (Supabase Auth), RBAC (operador/admin)
 
 ## Tasks
 
-| Task | Descrição | Status | Estimativa |
-|---|---|---|---|
-| T1 | `backend/api/deps.py`: `get_supabase_user`, `require_admin`, `require_operator` — validação JWT via Supabase + leitura de role de `perfis` | ⏳ | ~30 min |
-| T2 | `backend/api/routers/auth.py`: `POST /v1/auth/login`, `GET /v1/me` | ⏳ | ~20 min |
-| T3 | `backend/api/routers/products.py` + `backend/services/product_service.py`: `GET /v1/products`, `POST /v1/products`, `GET /v1/products/{id}`, `GET /v1/products/lookup` (barcode + Gemini Vision) | ⏳ | ~50 min |
-| T4 | `backend/api/routers/movements.py` + `backend/services/movement_service.py`: `GET /v1/movements`, `POST /v1/movements` | ⏳ | ~30 min |
-| T5 | `backend/api/routers/financials.py` + `backend/services/financial_service.py`: `GET /v1/financials/summary`, `GET /v1/reports/daily` | ⏳ | ~30 min |
-| T6 | `backend/api/routers/ai.py`: `GET /v1/ai/insights`, `POST /v1/ai/chat` (SSE streaming via LangChain + pgvector) | ⏳ | ~40 min |
-| T7 | `backend/api/routers/webhooks.py` + `backend/services/webhook_service.py`: `POST /v1/webhooks/supabase` com secret validation + async dispatch stubs | ⏳ | ~25 min |
-| T8 | `backend/Dockerfile` + `docker-compose.yml` | ⏳ | ~15 min |
+| Task | Descrição | Tag | Status | Estimativa |
+|---|---|---|---|---|
+| T1 | `backend/api/deps.py`: `get_supabase_user`, `require_admin`, `require_operator` — validação JWT via Supabase + leitura de role de `perfis` | `backend` | ⏳ | ~30 min |
+| T2 | `backend/api/routers/auth.py`: `POST /v1/auth/login`, `GET /v1/me` | `backend` | ⏳ | ~20 min |
+| T3 | `backend/api/routers/products.py` + `backend/services/product_service.py`: `GET /v1/products`, `POST /v1/products`, `GET /v1/products/{id}`, `GET /v1/products/lookup` (barcode + Gemini Vision) | `backend` | ⏳ | ~50 min |
+| T4 | `backend/api/routers/movements.py` + `backend/services/movement_service.py`: `GET /v1/movements`, `POST /v1/movements` | `backend` | ⏳ | ~30 min |
+| T5 | `backend/api/routers/financials.py` + `backend/services/financial_service.py`: `GET /v1/financials/summary`, `GET /v1/reports/daily` | `backend` | ⏳ | ~30 min |
+| T6 | `backend/api/routers/ai.py`: `GET /v1/ai/insights`, `POST /v1/ai/chat` (SSE streaming via LangChain + pgvector) | `backend` | ⏳ | ~40 min |
+| T7 | `backend/api/routers/webhooks.py` + `backend/services/webhook_service.py`: `POST /v1/webhooks/supabase` com secret validation + async dispatch stubs | `backend` | ⏳ | ~25 min |
+| T8 | `backend/Dockerfile` + `docker-compose.yml` | `backend` | ⏳ | ~15 min |
 
 ## Contrato de saída
 

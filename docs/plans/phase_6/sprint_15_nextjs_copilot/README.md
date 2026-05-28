@@ -8,13 +8,13 @@ Widget de chat flutuante (FAB bottom-right) acessível em todas as páginas. Con
 
 ## Tasks
 
-| Task | Descrição | Status | Estimativa |
-|---|---|---|---|
-| T1 | `components/Copilot/CopilotFab.tsx`: botão flutuante que abre/fecha o painel de chat | ⏳ | ~20 min |
-| T2 | `components/Copilot/CopilotPanel.tsx`: painel de chat com histórico de mensagens, input, indicador de digitação | ⏳ | ~35 min |
-| T3 | `lib/copilot.ts`: função `streamChat(message)` que consome SSE de `POST /v1/ai/chat` e retorna AsyncGenerator de deltas | ⏳ | ~25 min |
-| T4 | Integrar `CopilotFab` no layout protegido `app/(protected)/layout.tsx` | ⏳ | ~10 min |
-| T5 | Testar end-to-end: pergunta → SSE stream → tokens renderizando em tempo real | ⏳ | ~15 min |
+| Task | Descrição | Tag | Status | Estimativa |
+|---|---|---|---|---|
+| T1 | `components/Copilot/CopilotFab.tsx`: botão flutuante que abre/fecha o painel de chat | `frontend` | ⏳ | ~20 min |
+| T2 | `components/Copilot/CopilotPanel.tsx`: painel de chat com histórico de mensagens, input, indicador de digitação | `frontend` | ⏳ | ~35 min |
+| T3 | `lib/copilot.ts`: função `streamChat(message)` que consome SSE de `POST /v1/ai/chat` e retorna AsyncGenerator de deltas | `frontend` | ⏳ | ~25 min |
+| T4 | Integrar `CopilotFab` no layout protegido `app/(protected)/layout.tsx` | `frontend` | ⏳ | ~10 min |
+| T5 | Testar end-to-end: pergunta → SSE stream → tokens renderizando em tempo real | `frontend` | ⏳ | ~15 min |
 
 ## Contrato de saída
 

@@ -21,16 +21,16 @@ Fluxo completo de registro de movimentação: tipo → identificar produto → c
 
 ## Tasks
 
-| Task | Descrição | Status | Estimativa |
-|---|---|---|---|
-| T1 | Screen `MovimentacaoTipoScreen`: 3 botões Entrada/Saída/Ajuste | ⏳ | ~15 min |
-| T2 | Screen `IdentificarProdutoScreen`: 4 métodos como tabs/botões | ⏳ | ~20 min |
-| T3 | Scan barcode: `expo-barcode-scanner` → `GET /v1/products/lookup?barcode=` → exibe produto encontrado | ⏳ | ~30 min |
-| T4 | Foto produto: `expo-image-picker` → `POST /v1/products/lookup` (multipart) → exibe match Gemini | ⏳ | ~35 min |
-| T5 | Busca texto: input com debounce → `GET /v1/products?search=` → lista selecionável | ⏳ | ~20 min |
-| T6 | Últimas movimentações: lista das últimas 10 de `GET /v1/movements` → tap seleciona produto | ⏳ | ~15 min |
-| T7 | Screen `ConfirmarMovimentacaoScreen`: input quantidade + nota + botão confirmar → `POST /v1/movements` | ⏳ | ~25 min |
-| T8 | Feedback: toast de sucesso + navegação de volta para tab Movimentações | ⏳ | ~10 min |
+| Task | Descrição | Tag | Status | Estimativa |
+|---|---|---|---|---|
+| T1 | Screen `MovimentacaoTipoScreen`: 3 botões Entrada/Saída/Ajuste | `frontend` | ⏳ | ~15 min |
+| T2 | Screen `IdentificarProdutoScreen`: 4 métodos como tabs/botões | `frontend` | ⏳ | ~20 min |
+| T3 | Scan barcode: `expo-barcode-scanner` → `GET /v1/products/lookup?barcode=` → exibe produto encontrado | `frontend` | ⏳ | ~30 min |
+| T4 | Foto produto: `expo-image-picker` → `POST /v1/products/lookup` (multipart) → exibe match Gemini | `frontend` | ⏳ | ~35 min |
+| T5 | Busca texto: input com debounce → `GET /v1/products?search=` → lista selecionável | `frontend` | ⏳ | ~20 min |
+| T6 | Últimas movimentações: lista das últimas 10 de `GET /v1/movements` → tap seleciona produto | `frontend` | ⏳ | ~15 min |
+| T7 | Screen `ConfirmarMovimentacaoScreen`: input quantidade + nota + botão confirmar → `POST /v1/movements` | `frontend` | ⏳ | ~25 min |
+| T8 | Feedback: toast de sucesso + navegação de volta para tab Movimentações | `frontend` | ⏳ | ~10 min |
 
 ## Contrato de saída
 

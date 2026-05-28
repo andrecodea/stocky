@@ -8,14 +8,14 @@ Estender schema com tabelas para agentes AI, RAG, e módulos de negócio ainda a
 
 ## Tasks
 
-| Task | Descrição | Status | Estimativa |
-|---|---|---|---|
-| T1 | Migração: `logs_ia`, `embeddings_ia`, extension `vector`, HNSW index, função `buscar_embeddings` | ⏳ | ~30 min |
-| T2 | Migração: `vendas`, `financeiro`, `fornecedores`, `transferencias`, `produto_fornecedor` | ⏳ | ~30 min |
-| T3 | Migração: `ALTER produtos` (+ `categoria`), `ALTER movimentacoes` (+ `metodo`), atualizar view `estoque_atual` com `status` | ⏳ | ~20 min |
-| T4 | Migração: RLS policies para todas as novas tabelas | ⏳ | ~25 min |
-| T5 | Migração: pg_cron jobs (FinancialAgent diário 06h, ComercialAgent diário 08h, SupplyChainAgent semanal seg 07h) | ⏳ | ~20 min |
-| T6 | `supabase/WEBHOOKS.md`: checklist manual de configuração dos webhooks no Dashboard | ⏳ | ~15 min |
+| Task | Descrição | Tag | Status | Estimativa |
+|---|---|---|---|---|
+| T1 | Migração: `logs_ia`, `embeddings_ia`, extension `vector`, HNSW index, função `buscar_embeddings` | `database` | ⏳ | ~30 min |
+| T2 | Migração: `vendas`, `financeiro`, `fornecedores`, `transferencias`, `produto_fornecedor` | `database` | ⏳ | ~30 min |
+| T3 | Migração: `ALTER produtos` (+ `categoria`), `ALTER movimentacoes` (+ `metodo`), atualizar view `estoque_atual` com `status` | `database` | ⏳ | ~20 min |
+| T4 | Migração: RLS policies para todas as novas tabelas | `database` | ⏳ | ~25 min |
+| T5 | Migração: pg_cron jobs (FinancialAgent diário 06h, ComercialAgent diário 08h, SupplyChainAgent semanal seg 07h) | `database` | ⏳ | ~20 min |
+| T6 | `supabase/WEBHOOKS.md`: checklist manual de configuração dos webhooks no Dashboard | `database` | ⏳ | ~15 min |
 
 ## Contrato de saída
 

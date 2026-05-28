@@ -12,14 +12,14 @@ Expo SDK 52 · TypeScript · NativeWind (Tailwind para RN) · `@supabase/supabas
 
 ## Tasks
 
-| Task | Descrição | Status | Estimativa |
-|---|---|---|---|
-| T1 | `npx create-expo-app@latest mobile --template blank-typescript` | ⏳ | ~10 min |
-| T2 | Instalar NativeWind, configurar `babel.config.js` e `tailwind.config.js` | ⏳ | ~20 min |
-| T3 | `@supabase/supabase-js` + `AsyncStorage` para persistência de sessão | ⏳ | ~20 min |
-| T4 | Expo Router: estrutura `app/(auth)/login.tsx` + `app/(tabs)/` | ⏳ | ~25 min |
-| T5 | Tela login: email/senha → `supabase.auth.signInWithPassword` → redirect para tabs | ⏳ | ~20 min |
-| T6 | Bottom tab navigator: 4 tabs com ícones Material (Home · Estoque · Movimentações · Alertas) | ⏳ | ~20 min |
+| Task | Descrição | Tag | Status | Estimativa |
+|---|---|---|---|---|
+| T1 | `npx create-expo-app@latest mobile --template blank-typescript` | `frontend` | ⏳ | ~10 min |
+| T2 | Instalar NativeWind, configurar `babel.config.js` e `tailwind.config.js` | `frontend` | ⏳ | ~20 min |
+| T3 | `@supabase/supabase-js` + `AsyncStorage` para persistência de sessão | `frontend` | ⏳ | ~20 min |
+| T4 | Expo Router: estrutura `app/(auth)/login.tsx` + `app/(tabs)/` | `frontend` | ⏳ | ~25 min |
+| T5 | Tela login: email/senha → `supabase.auth.signInWithPassword` → redirect para tabs | `frontend` | ⏳ | ~20 min |
+| T6 | Bottom tab navigator: 4 tabs com ícones Material (Home · Estoque · Movimentações · Alertas) | `frontend` | ⏳ | ~20 min |
 
 ## Contrato de saída
 

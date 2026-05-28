@@ -18,14 +18,14 @@ Implementar os 5 agentes ambientes com LangGraph. Cada agente tem estado tipado,
 
 ## Tasks
 
-| Task | Descrição | Status | Estimativa |
-|---|---|---|---|
-| T1 | `agents/base.py`: `write_log`, `get_llm`, fetchers de dados (stock, movements, sales, financials) | ⏳ | ~20 min |
-| T2 | `agents/estoque/`: subagents + LangGraph graph + wire em `webhook_service` | ⏳ | ~40 min |
-| T3 | `agents/comercial/`: subagents + LangGraph graph + wire | ⏳ | ~35 min |
-| T4 | `agents/financial/`: subagents + LangGraph graph (inclui LLM call no ReportWriter) + wire | ⏳ | ~35 min |
-| T5 | `agents/logistics/`: subagents + LangGraph graph + wire | ⏳ | ~25 min |
-| T6 | `agents/supply_chain/`: subagents (inclui Tavily WebResearcher) + LangGraph graph + wire | ⏳ | ~40 min |
+| Task | Descrição | Tag | Status | Estimativa |
+|---|---|---|---|---|
+| T1 | `agents/base.py`: `write_log`, `get_llm`, fetchers de dados (stock, movements, sales, financials) | `ai` | ⏳ | ~20 min |
+| T2 | `agents/estoque/`: subagents + LangGraph graph + wire em `webhook_service` | `ai` | ⏳ | ~40 min |
+| T3 | `agents/comercial/`: subagents + LangGraph graph + wire | `ai` | ⏳ | ~35 min |
+| T4 | `agents/financial/`: subagents + LangGraph graph (inclui LLM call no ReportWriter) + wire | `ai` | ⏳ | ~35 min |
+| T5 | `agents/logistics/`: subagents + LangGraph graph + wire | `ai` | ⏳ | ~25 min |
+| T6 | `agents/supply_chain/`: subagents (inclui Tavily WebResearcher) + LangGraph graph + wire | `ai` | ⏳ | ~40 min |
 
 ## Contrato de saída
 

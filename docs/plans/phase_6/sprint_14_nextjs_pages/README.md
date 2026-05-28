@@ -20,17 +20,17 @@ Implementar as 7 páginas do dashboard admin com dados reais via API FastAPI + S
 
 ## Tasks
 
-| Task | Descrição | Status | Estimativa |
-|---|---|---|---|
-| T1 | `lib/api.ts`: funções fetch tipadas para cada endpoint FastAPI (`getProducts`, `getMovements`, `getInsights`, `getFinancialSummary`, etc.) | ⏳ | ~30 min |
-| T2 | Componentes compartilhados: `KpiCard`, `StatusChip`, `InsightCard`, `DataTable` | ⏳ | ~35 min |
-| T3 | Página Dashboard: KPIs via `getFinancialSummary` + feed `logs_ia` via Supabase Realtime subscription | ⏳ | ~35 min |
-| T4 | Página Estoque: tabela `getProducts` com filtros client-side | ⏳ | ~25 min |
-| T5 | Página Financeiro: `getFinancialSummary` + `getDailyReport` | ⏳ | ~25 min |
-| T6 | Página Comercial: `getInsights?type=sales_report` | ⏳ | ~20 min |
-| T7 | Página Logística: `getInsights?type=transfer_suggestion` + `getMovements` | ⏳ | ~20 min |
-| T8 | Página Supply Chain: `getInsights?type=supplier_report` com heatmap de sazonalidade | ⏳ | ~25 min |
-| T9 | Página Configurações: listagem e edição de roles via Supabase `perfis` + toggles (estado local por agora) | ⏳ | ~30 min |
+| Task | Descrição | Tag | Status | Estimativa |
+|---|---|---|---|---|
+| T1 | `lib/api.ts`: funções fetch tipadas para cada endpoint FastAPI (`getProducts`, `getMovements`, `getInsights`, `getFinancialSummary`, etc.) | `frontend` | ⏳ | ~30 min |
+| T2 | Componentes compartilhados: `KpiCard`, `StatusChip`, `InsightCard`, `DataTable` | `frontend` | ⏳ | ~35 min |
+| T3 | Página Dashboard: KPIs via `getFinancialSummary` + feed `logs_ia` via Supabase Realtime subscription | `frontend` | ⏳ | ~35 min |
+| T4 | Página Estoque: tabela `getProducts` com filtros client-side | `frontend` | ⏳ | ~25 min |
+| T5 | Página Financeiro: `getFinancialSummary` + `getDailyReport` | `frontend` | ⏳ | ~25 min |
+| T6 | Página Comercial: `getInsights?type=sales_report` | `frontend` | ⏳ | ~20 min |
+| T7 | Página Logística: `getInsights?type=transfer_suggestion` + `getMovements` | `frontend` | ⏳ | ~20 min |
+| T8 | Página Supply Chain: `getInsights?type=supplier_report` com heatmap de sazonalidade | `frontend` | ⏳ | ~25 min |
+| T9 | Página Configurações: listagem e edição de roles via Supabase `perfis` + toggles (estado local por agora) | `frontend` | ⏳ | ~30 min |
 
 ## Contrato de saída
 

@@ -8,12 +8,12 @@ Implementar o pipeline de embeddings para o RAG Copilot: embeda produtos, movime
 
 ## Tasks
 
-| Task | Descrição | Status | Estimativa |
-|---|---|---|---|
-| T1 | `agents/rag/embedder.py`: `build_product_document`, `build_log_document`, `embed_and_store`, `re_embed_products`, `re_embed_log` | ⏳ | ~30 min |
-| T2 | Integrar `re_embed_log` no `agents/base.py::write_log` (fire-and-forget após gravar em `logs_ia`) | ⏳ | ~15 min |
-| T3 | Script `scripts/seed_embeddings.py`: embeda todos produtos e últimos 50 logs existentes (warm-up inicial) | ⏳ | ~20 min |
-| T4 | Testar chat RAG end-to-end: `POST /v1/ai/chat` → embed query → `buscar_embeddings` → LLM stream | ⏳ | ~20 min |
+| Task | Descrição | Tag | Status | Estimativa |
+|---|---|---|---|---|
+| T1 | `agents/rag/embedder.py`: `build_product_document`, `build_log_document`, `embed_and_store`, `re_embed_products`, `re_embed_log` | `ai` | ⏳ | ~30 min |
+| T2 | Integrar `re_embed_log` no `agents/base.py::write_log` (fire-and-forget após gravar em `logs_ia`) | `ai` | ⏳ | ~15 min |
+| T3 | Script `scripts/seed_embeddings.py`: embeda todos produtos e últimos 50 logs existentes (warm-up inicial) | `ai` | ⏳ | ~20 min |
+| T4 | Testar chat RAG end-to-end: `POST /v1/ai/chat` → embed query → `buscar_embeddings` → LLM stream | `ai` | ⏳ | ~20 min |
 
 ## Contrato de saída
 

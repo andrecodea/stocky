@@ -17,14 +17,14 @@ Implementar as 4 tabs do app operador com dados reais.
 
 ## Tasks
 
-| Task | Descrição | Status | Estimativa |
-|---|---|---|---|
-| T1 | `lib/api.ts`: funções fetch para `getProducts`, `getMovements`, `getInsights`, `getKpis` | ⏳ | ~25 min |
-| T2 | Componentes: `KpiCard`, `StatusChip`, `ProductListItem`, `AlertCard` | ⏳ | ~35 min |
-| T3 | Tab Home: KPIs + feed Realtime de `logs_ia` (Supabase channel) | ⏳ | ~30 min |
-| T4 | Tab Estoque: FlatList de produtos com busca + StatusChip | ⏳ | ~25 min |
-| T5 | Tab Movimentações: 3 botões de ação + FlatList de últimas movimentações | ⏳ | ~20 min |
-| T6 | Tab Alertas: lista de insights com urgência colorida | ⏳ | ~20 min |
+| Task | Descrição | Tag | Status | Estimativa |
+|---|---|---|---|---|
+| T1 | `lib/api.ts`: funções fetch para `getProducts`, `getMovements`, `getInsights`, `getKpis` | `frontend` | ⏳ | ~25 min |
+| T2 | Componentes: `KpiCard`, `StatusChip`, `ProductListItem`, `AlertCard` | `frontend` | ⏳ | ~35 min |
+| T3 | Tab Home: KPIs + feed Realtime de `logs_ia` (Supabase channel) | `frontend` | ⏳ | ~30 min |
+| T4 | Tab Estoque: FlatList de produtos com busca + StatusChip | `frontend` | ⏳ | ~25 min |
+| T5 | Tab Movimentações: 3 botões de ação + FlatList de últimas movimentações | `frontend` | ⏳ | ~20 min |
+| T6 | Tab Alertas: lista de insights com urgência colorida | `frontend` | ⏳ | ~20 min |
 
 ## Contrato de saída
 
