@@ -4,9 +4,15 @@
 **Duração estimada:** ~4–5 dias (semana 3)  
 **Pré-requisito:** Sprint 4 concluído (endpoints de estoque funcionando)
 
-## Objetivo POC
+## Objetivo POC ✅ CONCLUÍDO
 
-Integrar LangChain com OpenRouter para entregar **3 features de IA demonstráveis**:
+Integrou LangChain single agent com OpenRouter para **3 features de IA demonstráveis**:
+
+> **Substituído na arquitetura de produção por 5 Deep Agents (LangGraph) + RAG pipeline:**
+> - [[phase_5/sprint_11_deep_agents]] — EstoqueAgent · ComercialAgent · FinancialAgent · LogisticsAgent · SupplyChainAgent
+> - [[phase_5/sprint_12_rag_pipeline]] — Embeddings + Copilot RAG
+
+### Features originais do POC:
 1. Recomendação de reposição baseada no estoque atual
 2. Chat com agente de estoque (histórico, busca web via Tavily)
 3. Identificação de produto por foto (OCR/visão)

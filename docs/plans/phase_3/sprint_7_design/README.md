@@ -4,9 +4,13 @@
 **Duração estimada:** ~5 dias (semana 2–3 em paralelo com backend)  
 **Pré-requisito:** Nenhum — pode começar na semana 2
 
-## Objetivo POC
+## Objetivo POC ✅ CONCLUÍDO
 
-Entregar frontend navegável com dados reais. Para o POC, foi optado por **Streamlit** como MVP web em vez de React Native — mais rápido de validar. React Native fica para pós-POC.
+Entregou frontend navegável com dados reais via **Streamlit** (MVP escolhido para o POC).
+
+> **Substituído na arquitetura de produção por:**
+> - Next.js admin dashboard → [[phase_6/sprint_13_nextjs_setup]]
+> - React Native Expo mobile → [[phase_7/sprint_16_expo_setup]]
 
 ## Tasks
 
