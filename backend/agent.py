@@ -41,7 +41,10 @@ def build_agent() -> Runnable:
     analysis_agent = create_agent(
         model=llm,
         tools=[tavily_search],
-        system_prompt="You are a helpful and experienced inventory manager.",
+        system_prompt=(
+            "Você é um assistente especializado em gestão de estoque. "
+            "Responda sempre em português, de forma clara e objetiva."
+        ),
     )
 
     return analysis_agent

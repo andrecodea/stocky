@@ -27,6 +27,14 @@ pages = {
 
 pg = st.navigation(pages)
 
+# Inicializa estado global uma única vez — persiste entre trocas de página
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
+if "lc_history" not in st.session_state:
+    st.session_state.lc_history = []
+if "recomendacoes" not in st.session_state:
+    st.session_state.recomendacoes = None
+
 with st.sidebar:
     st.markdown("### 📦 Stocky")
     st.caption("Gestão inteligente de estoque")
