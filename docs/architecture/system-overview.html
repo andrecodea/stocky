@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stocky — System Architecture Overview</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0d0d0d;
+    color: #e0e0e0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    padding: 40px 32px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .meta { font-size: 12px; color: #666; margin-bottom: 32px; }
+
+  .arch-diagram { display: flex; flex-direction: column; gap: 12px; }
+  .arch-row { display: flex; gap: 10px; align-items: stretch; }
+  .arch-layer-label {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #666;
+    min-width: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .arch-boxes { display: flex; gap: 10px; flex: 1; flex-wrap: wrap; }
+  .arch-box {
+    border-radius: 8px;
+    padding: 14px 16px;
+    flex: 1;
+    min-width: 160px;
+  }
+  .arch-box h4 { margin: 0 0 5px 0; font-size: 13px; font-weight: 600; }
+  .arch-box p  { margin: 0 0 6px 0; font-size: 11px; opacity: 0.8; line-height: 1.5; }
+  .badges { display: flex; gap: 4px; flex-wrap: wrap; }
+  .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.12);
+    border-radius: 4px;
+    padding: 2px 7px;
+    font-size: 10px;
+    font-family: monospace;
+  }
+
+  .layer-client  { background: #0f2744; border: 1px solid #1e4a80; color: #cce4ff; }
+  .layer-gateway { background: #0f2a1a; border: 1px solid #1e5a36; color: #c8f0d8; }
+  .layer-ai      { background: #28103a; border: 1px solid #5a1e8c; color: #edd8ff; }
+  .layer-data    { background: #2a1f0e; border: 1px solid #7a5020; color: #fdecc8; }
+
+  .arrow-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+    padding: 2px 38px;
+  }
+  .arrow-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    flex: 1;
+  }
+  .arrow-glyph { font-size: 18px; color: #555; }
+  .arrow-label { font-size: 10px; color: #555; text-align: center; }
+
+  .legend {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    padding: 12px 16px;
+    background: #141414;
+    border-radius: 8px;
+    border: 1px solid #222;
+  }
+  .legend-title { font-size: 11px; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 1px; width: 100%; }
+  .legend-item { display: flex; align-items: center; gap: 7px; font-size: 11px; color: #aaa; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+  .notes {
+    margin-top: 24px;
+    padding: 16px;
+    background: #141414;
+    border-radius: 8px;
+    border: 1px solid #222;
+  }
+  .notes h3 { font-size: 12px; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+  .notes ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .notes li { font-size: 12px; color: #999; padding-left: 14px; position: relative; line-height: 1.5; }
+  .notes li::before { content: '→'; position: absolute; left: 0; color: #555; }
+</style>
+</head>
+<body>
+
+<h1>Stocky — System Architecture Overview</h1>
+<p class="meta">Last updated: 2026-05-28 · Stack: FastAPI · Deep Agents · Next.js · React Native · Supabase · OpenRouter · Coolify</p>
+
+<div class="arch-diagram">
+
+  <!-- CLIENTS -->
+  <div class="arch-row">
+    <div class="arch-layer-label">Clients</div>
+    <div class="arch-boxes">
+      <div class="arch-box layer-client">
+        <h4>📱 React Native (Expo)</h4>
+        <p>Mobile app for stock operators — inventory, barcode scan, camera, alerts, AI chat.</p>
+        <div class="badges">
+          <span class="badge">EAS Build</span>
+          <span class="badge">Play Store / TestFlight</span>
+        </div>
+      </div>
+      <div class="arch-box layer-client">
+        <h4>🖥 Next.js Web</h4>
+        <p>Admin dashboard — financials, team management, reports, logistics, AI insights.</p>
+        <div class="badges">
+          <span class="badge">Vercel</span>
+          <span class="badge">SSR + API Routes</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-row">
+    <div class="arrow-group">
+      <div class="arrow-glyph">↕</div>
+      <div class="arrow-label">REST (HTTPS) + Supabase Realtime (WebSocket)</div>
+    </div>
+  </div>
+
+  <!-- API -->
+  <div class="arch-row">
+    <div class="arch-layer-label">API</div>
+    <div class="arch-boxes">
+      <div class="arch-box layer-gateway">
+        <h4>⚡ FastAPI</h4>
+        <p>Auth middleware (Supabase JWT), RBAC (operator / admin), business logic endpoints, Supabase webhook receiver, agent trigger orchestration.</p>
+        <div class="badges">
+          <span class="badge">Docker</span>
+          <span class="badge">Coolify / VPS</span>
+          <span class="badge">Uvicorn</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-row">
+    <div class="arrow-group">
+      <div class="arrow-glyph">↕</div>
+      <div class="arrow-label">invoke / stream results</div>
+    </div>
+    <div class="arrow-group">
+      <div class="arrow-glyph">↕</div>
+      <div class="arrow-label">vector retrieve + generate</div>
+    </div>
+  </div>
+
+  <!-- AI LAYER -->
+  <div class="arch-row">
+    <div class="arch-layer-label">AI</div>
+    <div class="arch-boxes">
+      <div class="arch-box layer-ai">
+        <h4>🤖 Deep Agents (LangGraph)</h4>
+        <p>One root agent per module. Spawns managed subagents for specialized tasks. Triggered by Supabase DB webhooks or pg_cron schedules. Outputs structured JSON reports saved back to Supabase.</p>
+        <div class="badges">
+          <span class="badge">EstoqueAgent</span>
+          <span class="badge">FinanceiroAgent</span>
+          <span class="badge">LogísticaAgent</span>
+          <span class="badge">SupplyChainAgent</span>
+        </div>
+      </div>
+      <div class="arch-box layer-ai">
+        <h4>🔍 RAG Chat (pgvector)</h4>
+        <p>Reactive Q&amp;A chat. Embeddings of products, stock movements, and reports stored in pgvector. LangChain retriever feeds context to LLM on each user query.</p>
+        <div class="badges">
+          <span class="badge">pgvector</span>
+          <span class="badge">LangChain retriever</span>
+          <span class="badge">Supabase VectorStore</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-row">
+    <div class="arrow-group">
+      <div class="arrow-glyph">↕</div>
+      <div class="arrow-label">LLM calls (OpenRouter)</div>
+    </div>
+    <div class="arrow-group">
+      <div class="arrow-glyph">↕</div>
+      <div class="arrow-label">read / write records</div>
+    </div>
+    <div class="arrow-group">
+      <div class="arrow-glyph">↕</div>
+      <div class="arrow-label">webhooks / realtime push</div>
+    </div>
+  </div>
+
+  <!-- DATA -->
+  <div class="arch-row">
+    <div class="arch-layer-label">Data</div>
+    <div class="arch-boxes">
+      <div class="arch-box layer-data">
+        <h4>🔌 OpenRouter</h4>
+        <p>LLM routing — Claude, GPT-4o, Gemini. Model selection per agent type and cost tier.</p>
+        <div class="badges">
+          <span class="badge">external API</span>
+        </div>
+      </div>
+      <div class="arch-box layer-data">
+        <h4>🗄 Supabase</h4>
+        <p>Postgres (products, stock, movements, financials, AI logs) · Auth + JWT · RLS policies · Realtime subscriptions · Storage (product photos) · pgvector (embeddings) · DB Webhooks · pg_cron</p>
+        <div class="badges">
+          <span class="badge">Supabase Cloud</span>
+          <span class="badge">pgvector</span>
+          <span class="badge">pg_cron</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- LEGEND -->
+<div class="legend">
+  <div class="legend-title">Infrastructure</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#0f2744"></div> Clients — Vercel (Next.js) · Expo EAS (React Native)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#0f2a1a"></div> API — Docker container on Coolify/VPS</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#28103a"></div> AI — Docker container on Coolify/VPS (same or separate)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#2a1f0e"></div> Data — Supabase Cloud · OpenRouter (external)</div>
+</div>
+
+<!-- DESIGN NOTES -->
+<div class="notes">
+  <h3>Key Design Decisions</h3>
+  <ul>
+    <li>Ambient agents (Deep Agents) are event-driven, not user-triggered — Supabase webhooks fire on DB changes, pg_cron schedules daily reports.</li>
+    <li>Chat Q&A uses RAG (not ambient agents) — reactive, requires fast response, pgvector retrieval keeps latency low.</li>
+    <li>Frontend consumes AI results via Supabase Realtime subscriptions — no polling, no agent waiting in HTTP request.</li>
+    <li>FastAPI and AI workers run in Docker on same VPS (Coolify manages containers) — can split into separate services if load requires.</li>
+    <li>RBAC: Operator role = mobile only (inventory ops). Admin role = web dashboard + financials + team management.</li>
+  </ul>
+</div>
+
+</body>
+</html>
