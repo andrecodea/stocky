@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stocky — API Reference</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0d0d0d;
+    color: #e0e0e0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    padding: 40px 32px;
+    max-width: 1060px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  h2 { font-size: 14px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #888; margin: 36px 0 12px; }
+  .meta { font-size: 12px; color: #666; margin-bottom: 32px; }
+
+  /* Base URL banner */
+  .base-url {
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-family: 'Consolas', monospace;
+    font-size: 13px;
+    color: #a8d8a8;
+    margin-bottom: 32px;
+  }
+  .base-url span { color: #666; font-size: 11px; margin-right: 8px; }
+
+  /* Endpoint table */
+  .endpoint-group { margin-bottom: 8px; }
+  .endpoint-row {
+    display: grid;
+    grid-template-columns: 72px 260px 80px 1fr;
+    gap: 0;
+    border-bottom: 1px solid #1e1e1e;
+    align-items: start;
+    padding: 10px 12px;
+    border-radius: 6px;
+    transition: background 0.15s;
+    cursor: default;
+  }
+  .endpoint-row:hover { background: #161616; }
+  .endpoint-row.header {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #555;
+    padding: 6px 12px;
+    border-bottom: 1px solid #252525;
+    cursor: default;
+  }
+  .endpoint-row.header:hover { background: transparent; }
+
+  /* Method badges */
+  .method {
+    display: inline-block;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    font-family: 'Consolas', monospace;
+    text-align: center;
+    width: 52px;
+  }
+  .GET    { background: #1a3a1a; color: #6fcf6f; }
+  .POST   { background: #1a2a3a; color: #6fb0ef; }
+  .PUT    { background: #2e2a14; color: #dfc96b; }
+  .DELETE { background: #3a1a1a; color: #ef7070; }
+  .PATCH  { background: #2a1a3a; color: #c06fef; }
+
+  .path {
+    font-family: 'Consolas', monospace;
+    font-size: 12px;
+    color: #d0d0d0;
+    padding-top: 2px;
+  }
+  .path .param { color: #ffa04a; }
+
+  .role-badges { display: flex; gap: 4px; flex-wrap: wrap; padding-top: 2px; }
+  .role {
+    font-size: 10px;
+    border-radius: 3px;
+    padding: 1px 6px;
+    font-weight: 600;
+  }
+  .role-public   { background: #2a2a2a; color: #999; }
+  .role-any      { background: #1a3030; color: #5ec4c4; }
+  .role-operator { background: #1e2a1a; color: #88cc66; }
+  .role-admin    { background: #2a1a2a; color: #cc88ee; }
+  .role-internal { background: #2a1f10; color: #cc8844; }
+
+  .desc { font-size: 12px; color: #aaa; padding-top: 3px; line-height: 1.5; }
+
+  /* Expandable detail panel */
+  .detail {
+    display: none;
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 6px;
+    padding: 16px 18px;
+    margin: 0 4px 6px;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+  .detail.open { display: block; }
+  .detail-section { margin-bottom: 12px; }
+  .detail-section:last-child { margin-bottom: 0; }
+  .detail-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #555;
+    margin-bottom: 6px;
+  }
+  pre {
+    background: #0a0a0a;
+    border: 1px solid #1e1e1e;
+    border-radius: 4px;
+    padding: 10px 12px;
+    font-family: 'Consolas', monospace;
+    font-size: 11px;
+    color: #c5e0c5;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .note { font-size: 11px; color: #888; font-style: italic; }
+
+  /* Auth / RBAC legend */
+  .legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+    padding: 12px 16px;
+    background: #131313;
+    border: 1px solid #222;
+    border-radius: 8px;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #888; }
+
+  /* Data flow note */
+  .flow-note {
+    background: #111820;
+    border-left: 3px solid #3a6ea8;
+    border-radius: 0 6px 6px 0;
+    padding: 12px 16px;
+    font-size: 12px;
+    color: #aac4e0;
+    margin-bottom: 28px;
+    line-height: 1.6;
+  }
+
+  .section-divider { height: 1px; background: #1e1e1e; margin: 4px 0 12px; }
+</style>
+</head>
+<body>
+
+<h1>Stocky — API Reference</h1>
+<p class="meta">FastAPI · Supabase JWT Auth · RBAC (Operator / Admin) · SSE Streaming · v1.0</p>
+
+<div class="base-url">
+  <span>BASE URL</span>https://api.stocky.app/v1
+  &nbsp;&nbsp;&nbsp;
+  <span>AUTH HEADER</span>Authorization: Bearer &lt;supabase_jwt&gt;
+</div>
+
+<div class="flow-note">
+  All endpoints validate Supabase JWT tokens and enforce RBAC before executing.
+  Agent outputs are consumed via <strong>GET /ai/insights</strong> (poll) or Supabase Realtime subscriptions on <code>ai_logs</code> — no agent-specific endpoints exist.
+  The <strong>POST /webhooks/supabase</strong> endpoint is called only by Supabase internal webhooks; it is not authenticated with a user JWT.
+</div>
+
+<div class="legend">
+  <div class="legend-item"><span class="role role-public">public</span> No auth required</div>
+  <div class="legend-item"><span class="role role-any">any</span> Any authenticated user</div>
+  <div class="legend-item"><span class="role role-operator">operator</span> Operator or Admin</div>
+  <div class="legend-item"><span class="role role-admin">admin</span> Admin only</div>
+  <div class="legend-item"><span class="role role-internal">internal</span> Supabase webhook secret</div>
+</div>
+
+<!-- ── AUTH ─────────────────────────────────────────────────── -->
+<h2>Auth</h2>
+<div class="section-divider"></div>
+
+<div class="endpoint-group">
+  <div class="endpoint-row header">
+    <div>Method</div><div>Path</div><div>Role</div><div>Description</div>
+  </div>
+
+  <!-- POST /auth/login -->
+  <div class="endpoint-row" onclick="toggle('auth-login')">
+    <div><span class="method POST">POST</span></div>
+    <div class="path">/auth/login</div>
+    <div class="role-badges"><span class="role role-public">public</span></div>
+    <div class="desc">Supabase Auth passthrough. Returns JWT + refresh token.</div>
+  </div>
+  <div class="detail" id="auth-login">
+    <div class="detail-section">
+      <div class="detail-label">Request Body</div>
+      <pre>{ "email": "user@example.com", "password": "secret" }</pre>
+    </div>
+    <div class="detail-section">
+      <div class="detail-label">Response 200</div>
+      <pre>{
+  "access_token": "eyJ...",
+  "refresh_token": "...",
+  "expires_in": 3600,
+  "user": { "id": "uuid", "email": "user@example.com", "role": "operator" }
+}</pre>
+    </div>
+    <div class="detail-section">
+      <p class="note">Delegates to Supabase Auth. FastAPI stores nothing — token validated on each request.</p>
+    </div>
+  </div>
+
+  <!-- GET /me -->
+  <div class="endpoint-row" onclick="toggle('me')">
+    <div><span class="method GET">GET</span></div>
+    <div class="path">/me</div>
+    <div class="role-badges"><span class="role role-any">any</span></div>
+    <div class="desc">Current user profile + RBAC role from <code>profiles</code> table.</div>
+  </div>
+  <div class="detail" id="me">
+    <div class="detail-section">
+      <div class="detail-label">Response 200</div>
+      <pre>{
+  "id": "uuid",
+  "email": "user@example.com",
+  "full_name": "João Silva",
+  "role": "operator",   // "operator" | "admin"
+  "company_id": "uuid",
+  "created_at": "2026-05-01T10:00:00Z"
+}</pre>
+    </div>
+  </div>
+</div>
+
+<!-- ── PRODUCTS ──────────────────────────────────────────────── -->
+<h2>Products</h2>
+<div class="section-divider"></div>
+
+<div class="endpoint-group">
+  <div class="endpoint-row header">
+    <div>Method</div><div>Path</div><div>Role</div><div>Description</div>
+  </div>
+
+  <!-- GET /products -->
+  <div class="endpoint-row" onclick="toggle('get-products')">
+    <div><span class="method GET">GET</span></div>
+    <div class="path">/products</div>
+    <div class="role-badges"><span class="role role-any">any</span></div>
+    <div class="desc">List products with current stock status. Supports filters + pagination.</div>
+  </div>
+  <div class="detail" id="get-products">
+    <div class="detail-section">
+      <div class="detail-label">Query Params</div>
+      <pre>?category=beverages
+?status=low|ok|critical     // derived from stock_levels vs min_stock
+?search=coca
+?page=1&limit=50</pre>
+    </div>
+    <div class="detail-section">
+      <div class="detail-label">Response 200</div>
+      <pre>{
+  "items": [
+    {
+      "id": "uuid",
+      "sku": "COCA-350",
+      "name": "Coca-Cola 350ml",
+      "category": "beverages",
+      "unit": "un",
+      "min_stock": 10,
+      "current_qty": 4,
+      "status": "critical",
+      "photo_url": "https://...supabase.co/storage/v1/object/..."
+    }
+  ],
+  "total": 142,
+  "page": 1,
+  "limit": 50
+}</pre>
+    </div>
+  </div>
+
+  <!-- POST /products -->
+  <div class="endpoint-row" onclick="toggle('post-products')">
+    <div><span class="method POST">POST</span></div>
+    <div class="path">/products</div>
+    <div class="role-badges"><span class="role role-operator">operator</span><span class="role role-admin">admin</span></div>
+    <div class="desc">Create product. Accepts JSON or multipart (with photo upload to Supabase Storage).</div>
+  </div>
+  <div class="detail" id="post-products">
+    <div class="detail-section">
+      <div class="detail-label">Request Body (JSON)</div>
+      <pre>{
+  "sku": "COCA-350",
+  "name": "Coca-Cola 350ml",
+  "category": "beverages",
+  "unit": "un",
+  "min_stock": 10
+}</pre>
+    </div>
+    <div class="detail-section">
+      <div class="detail-label">Request Body (multipart/form-data)</div>
+      <pre>fields: same as above
+file: photo (JPEG/PNG, max 5MB) → uploaded to Supabase Storage
+      → photo_url returned in response</pre>
+    </div>
+    <div class="detail-section">
+      <div class="detail-label">Response 201</div>
+      <pre>{ "id": "uuid", ...product fields, "photo_url": "https://..." }</pre>
+    </div>
+  </div>
+
+  <!-- GET /products/:id -->
+  <div class="endpoint-row" onclick="toggle('get-product-id')">
+    <div><span class="method GET">GET</span></div>
+    <div class="path">/products/<span class="param">:id</span></div>
+    <div class="role-badges"><span class="role role-any">any</span></div>
+    <div class="desc">Single product detail with full stock history summary.</div>
+  </div>
+  <div class="detail" id="get-product-id">
+    <div class="detail-section">
+      <div class="detail-label">Response 200</div>
+      <pre>{
+  "id": "uuid",
+  "sku": "...",
+  "name": "...",
+  "category": "...",
+  "unit": "...",
+  "min_stock": 10,
+  "current_qty": 4,
+  "status": "critical",
+  "photo_url": "...",
+  "last_movement": "2026-05-27T14:30:00Z",
+  "suppliers": [{ "id": "uuid", "name": "Distribuidor X", "lead_time_days": 3 }]
+}</pre>
+    </div>
+  </div>
+
+  <!-- GET /products/lookup -->
+  <div class="endpoint-row" onclick="toggle('get-product-lookup')">
+    <div><span class="method GET">GET</span></div>
+    <div class="path">/products/lookup</div>
+    <div class="role-badges"><span class="role role-any">any</span></div>
+    <div class="desc">Lookup by barcode/QR or by photo (Gemini Vision). Used by Movimentações flow.</div>
+  </div>
+  <div class="detail" id="get-product-lookup">
+    <div class="detail-section">
+      <div class="detail-label">Query Params (barcode)</div>
+      <pre>?barcode=7891000315507</pre>
+    </div>
+    <div class="detail-section">
+      <div class="detail-label">Request (photo — multipart POST)</div>
+      <pre>POST /products/lookup
+file: photo → Gemini Vision → SKU/name extraction → DB match
+Returns: matched product or 404 with extracted candidates</pre>
+    </div>
+    <div class="detail-section">
+      <div class="detail-label">Response 200</div>
+      <pre>{ "id": "uuid", "sku": "...", "name": "...", "current_qty": 4, "status": "critical" }</pre>
+    </div>
+    <p class="note">Photo lookup calls Gemini Vision via OpenRouter. Result is a best-match, not guaranteed exact.</p>
+  </div>
+</div>
+
+<!-- ── MOVEMENTS ─────────────────────────────────────────────── -->
+<h2>Movements</h2>
+<div class="section-divider"></div>
+
+<div class="endpoint-group">
+  <div class="endpoint-row header">
+    <div>Method</div><div>Path</div><div>Role</div><div>Description</div>
+  </div>
+
+  <!-- GET /movements -->
+  <div class="endpoint-row" onclick="toggle('get-movements')">
+    <div><span class="method GET">GET</span></div>
+    <div class="path">/movements</div>
+    <div class="role-badges"><span class="role role-any">any</span></div>
+    <div class="desc">List stock movements. Filterable by product, type, operator, date range.</div>
+  </div>
+  <div class="detail" id="get-movements">
+    <div class="detail-section">
+      <div class="detail-label">Query Params</div>
+      <pre>?product_id=uuid
+?type=entrada|saida|ajuste
+?operator_id=uuid
+?from=2026-05-01&to=2026-05-28
+?page=1&limit=50</pre>
+    </div>
+    <div class="detail-section">
+      <div class="detail-label">Response 200</div>
+      <pre>{
+  "items": [
+    {
+      "id": "uuid",
+      "product_id": "uuid",
+      "product_name": "Coca-Cola 350ml",
+      "type": "saida",
+      "qty": 12,
+      "note": "Venda balcão",
+      "method": "barcode",   // "barcode" | "photo" | "manual" | "recent"
+      "operator_id": "uuid",
+      "operator_name": "Carlos",
+      "created_at": "2026-05-27T14:30:00Z"
+    }
+  ],
+  "total": 310,
+  "page": 1,
+  "limit": 50
+}</pre>
+    </div>
+  </div>
+
+  <!-- POST /movements -->
+  <div class="endpoint-row" onclick="toggle('post-movements')">
+    <div><span class="method POST">POST</span></div>
+    <div class="path">/movements</div>
+    <div class="role-badges"><span class="role role-operator">operator</span><span class="role role-admin">admin</span></div>
+    <div class="desc">Register stock movement (entrada / saída / ajuste). Triggers EstoqueAgent webhook.</div>
+  </div>
+  <div class="detail" id="post-movements">
+    <div class="detail-section">
+      <div class="detail-label">Request Body</div>
+      <pre>{
+  "product_id": "uuid",
+  "type": "saida",           // "entrada" | "saida" | "ajuste"
+  "qty": 12,
+  "note": "Venda balcão",    // optional
+  "method": "barcode"        // "barcode" | "photo" | "manual" | "recent"
+}</pre>
+    </div>
+    <div class="detail-section">
+      <div class="detail-label">Response 201</div>
+      <pre>{
+  "id": "uuid",
+  "product_id": "uuid",
+  "type": "saida",
+  "qty": 12,
+  "new_stock_qty": 4,
+  "created_at": "2026-05-28T10:00:00Z"
+}</pre>
+    </div>
+    <p class="note">On insert, Supabase DB Webhook fires → FastAPI /webhooks/supabase → EstoqueAgent triggered.</p>
+  </div>
+</div>
+
+<!-- ── FINANCIALS ────────────────────────────────────────────── -->
+<h2>Financials</h2>
+<div class="section-divider"></div>
+
+<div class="endpoint-group">
+  <div class="endpoint-row header">
+    <div>Method</div><div>Path</div><div>Role</div><div>Description</div>
+  </div>
+
+  <!-- GET /financials/summary -->
+  <div class="endpoint-row" onclick="toggle('get-financials-summary')">
+    <div><span class="method GET">GET</span></div>
+    <div class="path">/financials/summary</div>
+    <div class="role-badges"><span class="role role-admin">admin</span></div>
+    <div class="desc">Financial KPIs: revenue, cost, margin, losses for a given period.</div>
+  </div>
+  <div class="detail" id="get-financials-summary">
+    <div class="detail-section">
+      <div class="detail-label">Query Params</div>
+      <pre>?from=2026-05-01&to=2026-05-28   // defaults: current month</pre>
+    </div>
+    <div class="detail-section">
+      <div class="detail-label">Response 200</div>
+      <pre>{
+  "period": { "from": "2026-05-01", "to": "2026-05-28" },
+  "revenue": 48200.00,
+  "total_cost": 31400.00,
+  "gross_margin": 16800.00,
+  "gross_margin_pct": 34.9,
+  "total_losses": 820.00,
+  "top_loss_products": [
+    { "product_id": "uuid", "name": "Iogurte Integral", "loss_value": 310.00 }
+  ]
+}</pre>
+    </div>
+  </div>
+
+  <!-- GET /reports/daily -->
+  <div class="endpoint-row" onclick="toggle('get-reports-daily')">
+    <div><span class="method GET">GET</span></div>
+    <div class="path">/reports/daily</div>
+    <div class="role-badges"><span class="role role-admin">admin</span></div>
+    <div class="desc">Latest FinancialAgent daily report from <code>ai_logs</code>.</div>
+  </div>
+  <div class="detail" id="get-reports-daily">
+    <div class="detail-section">
+      <div class="detail-label">Response 200 (ai_logs entry, type: "daily_report")</div>
+      <pre>{
+  "id": "uuid",
+  "type": "daily_report",
+  "generated_at": "2026-05-28T06:00:00Z",
+  "payload": {
+    "avg_margin": 34.2,
+    "top_losses": [{ "product": "Iogurte", "value": 310 }],
+    "recommendations": ["Reduzir pedido de iogurte", "Revisar fornecedor leite"]
+  }
+}</pre>
+    </div>
+  </div>
+</div>
+
+<!-- ── AI / AGENTS ───────────────────────────────────────────── -->
+<h2>AI &amp; Agents</h2>
+<div class="section-divider"></div>
+
+<div class="endpoint-group">
+  <div class="endpoint-row header">
+    <div>Method</div><div>Path</div><div>Role</div><div>Description</div>
+  </div>
+
+  <!-- GET /ai/insights -->
+  <div class="endpoint-row" onclick="toggle('get-ai-insights')">
+    <div><span class="method GET">GET</span></div>
+    <div class="path">/ai/insights</div>
+    <div class="role-badges"><span class="role role-any">any</span></div>
+    <div class="desc">Latest outputs from all agents in <code>ai_logs</code>. Filterable by type.</div>
+  </div>
+  <div class="detail" id="get-ai-insights">
+    <div class="detail-section">
+      <div class="detail-label">Query Params</div>
+      <pre>?type=restock_alert|sales_report|daily_report|transfer_suggestion|supplier_report
+?limit=20    // defaults: 20 most recent across all types</pre>
+    </div>
+    <div class="detail-section">
+      <div class="detail-label">Response 200</div>
+      <pre>{
+  "items": [
+    {
+      "id": "uuid",
+      "type": "restock_alert",
+      "agent": "EstoqueAgent",
+      "generated_at": "2026-05-28T09:15:00Z",
+      "payload": {
+        "product_id": "uuid",
+        "product_name": "Coca-Cola 350ml",
+        "recommended_qty": 24,
+        "urgency": "high"
+      }
+    },
+    {
+      "id": "uuid",
+      "type": "sales_report",
+      "agent": "ComercialAgent",
+      "generated_at": "2026-05-28T08:00:00Z",
+      "payload": {
+        "top_products": [...],
+        "demand_forecast": {...},
+        "avg_turnover": 4.2
+      }
+    }
+  ]
+}</pre>
+    </div>
+    <p class="note">Frontend can also subscribe via Supabase Realtime on <code>ai_logs</code> for push updates — no polling needed.</p>
+  </div>
+
+  <!-- POST /ai/chat -->
+  <div class="endpoint-row" onclick="toggle('post-ai-chat')">
+    <div><span class="method POST">POST</span></div>
+    <div class="path">/ai/chat</div>
+    <div class="role-badges"><span class="role role-any">any</span></div>
+    <div class="desc">RAG Copilot chat. Streams SSE response via pgvector + LLM (OpenRouter).</div>
+  </div>
+  <div class="detail" id="post-ai-chat">
+    <div class="detail-section">
+      <div class="detail-label">Request Body</div>
+      <pre>{
+  "message": "Quais produtos estão em risco de ruptura essa semana?",
+  "session_id": "uuid"    // optional, for context continuity
+}</pre>
+    </div>
+    <div class="detail-section">
+      <div class="detail-label">Response — Server-Sent Events (text/event-stream)</div>
+      <pre>data: {"delta": "Com base nos dados atuais, "}
+data: {"delta": "os produtos com maior risco são: "}
+data: {"delta": "Coca-Cola 350ml (estoque: 4, mínimo: 10)"}
+data: {"done": true, "sources": ["ai_logs/uuid", "stock_levels/uuid"]}</pre>
+    </div>
+    <div class="detail-section">
+      <div class="detail-label">RAG Pipeline</div>
+      <pre>1. Embed message  →  text-embedding-3-small (OpenRouter)
+2. pgvector cosine similarity  →  ai_embeddings table  →  top-K=5 chunks
+3. Augmented prompt  →  LLM via OpenRouter
+4. Stream response tokens as SSE deltas</pre>
+    </div>
+    <p class="note">Indexed data: products + stock levels · agent reports · financial movements · sales history.</p>
+  </div>
+</div>
+
+<!-- ── WEBHOOKS ──────────────────────────────────────────────── -->
+<h2>Webhooks</h2>
+<div class="section-divider"></div>
+
+<div class="endpoint-group">
+  <div class="endpoint-row header">
+    <div>Method</div><div>Path</div><div>Role</div><div>Description</div>
+  </div>
+
+  <!-- POST /webhooks/supabase -->
+  <div class="endpoint-row" onclick="toggle('post-webhook')">
+    <div><span class="method POST">POST</span></div>
+    <div class="path">/webhooks/supabase</div>
+    <div class="role-badges"><span class="role role-internal">internal</span></div>
+    <div class="desc">Supabase DB Webhook receiver. Dispatches correct Deep Agent based on table + event.</div>
+  </div>
+  <div class="detail" id="post-webhook">
+    <div class="detail-section">
+      <div class="detail-label">Auth</div>
+      <pre>Header: x-webhook-secret: &lt;SUPABASE_WEBHOOK_SECRET&gt;
+Validated against env var — NOT a user JWT.</pre>
+    </div>
+    <div class="detail-section">
+      <div class="detail-label">Request Body (Supabase Webhook format)</div>
+      <pre>{
+  "type": "INSERT",
+  "table": "movements",
+  "record": { "id": "uuid", "product_id": "uuid", "type": "saida", ... },
+  "schema": "public"
+}</pre>
+    </div>
+    <div class="detail-section">
+      <div class="detail-label">Dispatch Logic</div>
+      <pre>table=movements  (INSERT|UPDATE)  →  EstoqueAgent
+table=sales      (INSERT)          →  ComercialAgent
+table=transfers  (INSERT)          →  LogisticsAgent</pre>
+    </div>
+    <div class="detail-section">
+      <div class="detail-label">Response 202</div>
+      <pre>{ "dispatched": "EstoqueAgent", "event_id": "uuid" }</pre>
+    </div>
+    <p class="note">Agent runs asynchronously. Response acknowledges dispatch, not completion.</p>
+  </div>
+</div>
+
+<!-- ── ERROR RESPONSES ───────────────────────────────────────── -->
+<h2>Error Responses</h2>
+<div class="section-divider"></div>
+
+<div style="display:grid; grid-template-columns: 80px 1fr; gap: 8px 16px; font-size: 12px; padding: 12px 16px; background:#111; border-radius:8px; margin-bottom:16px;">
+  <div style="color:#ef7070; font-family:Consolas; font-weight:700;">400</div>
+  <div style="color:#aaa;">Bad Request — validation error. Body: <code>{ "detail": [{ "loc": [...], "msg": "..." }] }</code></div>
+  <div style="color:#ef7070; font-family:Consolas; font-weight:700;">401</div>
+  <div style="color:#aaa;">Unauthorized — missing or invalid JWT.</div>
+  <div style="color:#ef7070; font-family:Consolas; font-weight:700;">403</div>
+  <div style="color:#aaa;">Forbidden — authenticated but role insufficient (e.g., operator hitting admin route).</div>
+  <div style="color:#ef7070; font-family:Consolas; font-weight:700;">404</div>
+  <div style="color:#aaa;">Not Found — resource does not exist or is outside caller's company scope (RLS).</div>
+  <div style="color:#ef7070; font-family:Consolas; font-weight:700;">422</div>
+  <div style="color:#aaa;">Unprocessable — FastAPI/Pydantic schema mismatch.</div>
+  <div style="color:#ef7070; font-family:Consolas; font-weight:700;">500</div>
+  <div style="color:#aaa;">Internal Server Error — unexpected failure. Agent dispatch errors return 202 + async error written to <code>ai_logs</code>.</div>
+</div>
+
+<script>
+function toggle(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.toggle('open');
+}
+</script>
+</body>
+</html>
