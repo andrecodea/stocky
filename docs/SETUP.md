@@ -133,6 +133,7 @@ Correcao: verifique se embeddings existem, se a RPC de busca retorna chunks e se
 ## Links relacionados
 
 - [Index](../INDEX.md)
+- [Mobile test runbook](MOBILE_TEST_RUNBOOK.md)
 - [PRD](PRD.md)
 - [Roadmap](ROADMAP.md)
 - [ADR](ADR.md)

@@ -26,6 +26,7 @@ INDEX.md
 ## Setup
 
 - [Setup](docs/SETUP.md) - ambiente local, variaveis, comandos, validacao e troubleshooting.
+- [Mobile test runbook](docs/MOBILE_TEST_RUNBOOK.md) - logins, senha e comandos para testar o app no celular.
 
 ## Execucao
 

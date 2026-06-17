@@ -8,6 +8,7 @@ O produto combina um app operacional, um painel administrativo, um backend FastA
 
 - [Index](INDEX.md) - ponto central de navegacao da documentacao.
 - [Setup](docs/SETUP.md) - ambiente local, variaveis e validacao.
+- [Mobile test runbook](docs/MOBILE_TEST_RUNBOOK.md) - logins, senha e comandos para testar no celular.
 - [PRD](docs/PRD.md) - produto, usuarios, escopo e criterios de aceite.
 - [Roadmap](docs/ROADMAP.md) - milestones implementaveis e validacoes.
 - [ADR](docs/ADR.md) - indice de decisoes arquiteturais.
