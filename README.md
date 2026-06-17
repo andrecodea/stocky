@@ -1,76 +1,62 @@
 # Stocky
 
-Sistema de gerenciamento inteligente de estoque com IA, desenvolvido para pequenos e médios negócios. Permite controle de produtos, movimentações de estoque, acompanhamento financeiro e recomendações automatizadas via modelos de linguagem.
+Stocky e um sistema de gerenciamento inteligente de estoque para pequenos e medios negocios.
 
-## Status do POC
+O produto combina um app operacional, um painel administrativo, um backend FastAPI, Supabase e uma camada de IA para alertas, recomendacoes e consultas sobre estoque, vendas e financeiro.
 
-| Módulo | Status |
-|--------|--------|
-| Schema Supabase (produtos, movimentações, lotes, RLS) | ✅ Concluído |
-| FastAPI base (`/ping`, `/health`, estrutura) | 🔄 Em progresso |
-| Serviço de estoque (CRUD produtos, view `estoque_atual`) | 🔄 Em progresso |
-| Agente IA (recomendações + busca web via Tavily) | ✅ Concluído |
-| Frontend MVP Streamlit (dashboard, estoque, chat IA) | ✅ Concluído |
-| Módulo financeiro | ⏳ Pendente |
+## Fonte de verdade
 
-## Arquitetura
+- [Index](INDEX.md) - ponto central de navegacao da documentacao.
+- [Setup](docs/SETUP.md) - ambiente local, variaveis e validacao.
+- [PRD](docs/PRD.md) - produto, usuarios, escopo e criterios de aceite.
+- [Roadmap](docs/ROADMAP.md) - milestones implementaveis e validacoes.
+- [ADR](docs/ADR.md) - indice de decisoes arquiteturais.
+- [Diagramas HTML](docs/architecture/system-overview.html) - arquitetura e telas navegaveis.
+- [AGENTS.md](AGENTS.md) - instrucoes para agentes/codegen.
 
-![Diagrama de Arquitetura](stocky.drawio.png)
+## Stack alvo
 
-## Stack
+- Backend: Python 3.13, FastAPI, Supabase client.
+- Banco/Auth: Supabase PostgreSQL, Auth, RLS, Storage, Realtime, pgvector, pg_cron.
+- IA: LangGraph/Deep Agents, RAG com pgvector, OpenRouter.
+- Web admin: Next.js.
+- Mobile: React Native com Expo.
+- Deploy: Coolify/VPS para API e workers, Vercel para web, EAS para mobile.
 
-### Frontend (MVP)
-| Tecnologia | Uso |
-|---|---|
-| Streamlit | Dashboard web — visão geral, estoque e chat com IA |
+## Escopo principal
 
-> Frontend mobile (React Native) planejado para após validação do POC.
-
-### Backend
-| Tecnologia | Uso |
-|---|---|
-| Python 3.13 | API REST (FastAPI), regras de negócio e orquestração |
-| LangChain + LangGraph | Orquestrador de IA — recomendações, análises e busca web |
-| Tavily | Busca web em tempo real para o agente de estoque |
-| FastAPI | API REST — endpoints de produtos, movimentações e IA |
-
-### Dados e Infraestrutura
-| Tecnologia | Uso |
-|---|---|
-| Supabase PostgreSQL | Banco principal — produtos, estoque, movimentações, usuários e logs de IA |
-| Supabase Auth | Autenticação, sessão e RBAC (Operador / Admin) |
-| Supabase Storage | Fotos dos produtos e anexos |
-| OpenRouter | Roteamento para modelos LLM e multimodais |
-
-## Funcionalidades (POC)
-
-- Dashboard com KPIs de estoque em tempo real
-- Visualização de posição atual com alertas de estoque mínimo
-- Chat com agente de IA para consultas e recomendações de reposição
-- Agente com acesso à busca web (Tavily) para contexto de mercado
-- Serviço CRUD de produtos integrado ao Supabase
-
-## Funcionalidades planejadas (pós-POC)
-
-- Cadastro de produtos por foto (visão computacional) ou código de barras/QR
-- Módulo financeiro: custos, receitas, margem e perdas
-- Previsão de ruptura por ML
-- App mobile React Native
-- Controle de acesso por papel: **Operador** (estoque) e **Admin** (estoque + equipe + finanças)
+- Cadastro e consulta de produtos.
+- Movimentacoes de entrada, saida e ajuste.
+- Alertas de estoque minimo e risco de ruptura.
+- Financeiro basico: custos, receitas, margem e perdas.
+- IA para insights, recomendacoes e chat com contexto real.
+- RBAC com dois papeis: `operator` e `admin`.
 
 ## Como rodar
 
+Backend:
+
 ```bash
-# Instalar dependências
 uv sync
-
-# Configurar variáveis de ambiente
-cp .env.example .env
-# Preencher SUPABASE_URL, SUPABASE_ANON_KEY, OPENROUTER_API_KEY, TAVILY_API_KEY
-
-# Aplicar migrations no Supabase
-supabase db push --db-url "postgresql://postgres:<senha>@db.<ref>.supabase.co:5432/postgres"
-
-# Rodar Streamlit
-uv run streamlit run frontend/app/app.py
+uv run python backend/api/app.py
 ```
+
+Mobile:
+
+```bash
+cd mobile
+npm install
+npm run start
+```
+
+O app mobile atual cobre login, estoque, resumo financeiro para admin, IA com fallback local de estoque, alertas e registro de movimentacoes por busca textual. Scanner, camera e upload de fotos ficam fora do MVP atual.
+
+Enquanto o backend produtivo nao estiver completo, comece pelo [Index](INDEX.md) e consulte o [Roadmap](docs/ROADMAP.md) para o proximo contrato implementavel.
+
+## Diagramas
+
+- [System overview](docs/architecture/system-overview.html)
+- [AI modules](docs/architecture/ai-modules.html)
+- [API endpoints](docs/architecture/api-endpoints.html)
+- [Next.js screens](docs/architecture/nextjs-screens.html)
+- [React Native screens](docs/architecture/rn-screens.html)

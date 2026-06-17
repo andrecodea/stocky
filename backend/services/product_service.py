@@ -1,199 +1,142 @@
-"""Serviço de produtos do Stocky.
-
-Encapsula acesso à tabela `produtos` e à view `estoque_atual` no Supabase,
-expondo schemas Pydantic e operações CRUD utilizadas pela camada de API.
-"""
+"""Product service — CRUD operations on the 'produtos' table."""
 
 from __future__ import annotations
 
 from datetime import datetime
 from decimal import Decimal
 
-from pydantic import BaseModel, ConfigDict, Field
-
-from db.supabase import get_client
+from api.exceptions import ConflictError, NotFoundError
+from db.supabase import get_admin_client
+from schemas.produto import ProductCreate, ProductRead, ProductUpdate, StockPosition
 
 _TABLE = "produtos"
 _VIEW_ESTOQUE = "estoque_atual"
 
 
-# ---------------------------------------------------------------------------
-# Schemas
-# ---------------------------------------------------------------------------
-
-
-class ProductCreate(BaseModel):
-    """Payload para criação de produto.
-
-    Apenas `nome` é obrigatório; os demais campos podem ser preenchidos
-    posteriormente (por exemplo, após o enriquecimento via visão computacional).
-    """
-
-    nome: str = Field(..., min_length=1)
-    sku: str | None = None
-    descricao: str | None = None
-    preco_custo: Decimal | None = None
-    preco_venda: Decimal | None = None
-    unidade: str | None = None
-    estoque_minimo: int | None = None
-    foto_url: str | None = None
-
-
-class ProductUpdate(BaseModel):
-    """Payload de atualização parcial (PATCH).
-
-    Apenas os campos explicitamente enviados são persistidos. A detecção
-    é feita via `model_fields_set`, evitando sobrescrever colunas com `None`
-    quando o cliente não pretendia limpá-las.
-    """
-
-    nome: str | None = Field(default=None, min_length=1)
-    sku: str | None = None
-    descricao: str | None = None
-    preco_custo: Decimal | None = None
-    preco_venda: Decimal | None = None
-    unidade: str | None = None
-    estoque_minimo: int | None = None
-    foto_url: str | None = None
-
-
-class Product(BaseModel):
-    """Representação completa de um produto persistido."""
-
-    model_config = ConfigDict(from_attributes=True)
-
-    id: str
-    nome: str
-    sku: str | None = None
-    descricao: str | None = None
-    preco_custo: Decimal | None = None
-    preco_venda: Decimal | None = None
-    unidade: str | None = None
-    estoque_minimo: int | None = None
-    foto_url: str | None = None
-    criado_em: datetime | None = None
-    atualizado_em: datetime | None = None
-
-
-class ProductWithStock(BaseModel):
-    """Produto enriquecido com a posição atual de estoque."""
-
-    model_config = ConfigDict(from_attributes=True)
-
-    id: str
-    nome: str
-    sku: str | None = None
-    unidade: str | None = None
-    estoque_minimo: int | None = None
-    quantidade_atual: Decimal
-    abaixo_minimo: bool
-
-
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
-
-
-def _serialize_for_supabase(payload: dict) -> dict:
-    """Converte tipos Python (Decimal, datetime) para JSON-serializáveis."""
-    serialized: dict = {}
+def _serialize(payload: dict) -> dict:
+    """Convert Python types (Decimal, datetime, date) to JSON-safe values."""
+    out: dict = {}
     for key, value in payload.items():
         if isinstance(value, Decimal):
-            serialized[key] = str(value)
+            out[key] = float(value)
         elif isinstance(value, datetime):
-            serialized[key] = value.isoformat()
+            out[key] = value.isoformat()
         else:
-            serialized[key] = value
-    return serialized
+            out[key] = value
+    return out
 
 
-# ---------------------------------------------------------------------------
-# Operações CRUD
-# ---------------------------------------------------------------------------
-# TODO: Transformar funções em endpoints do FastAPI
-# Documentação: https://fastapi.tiangolo.com/tutorial/first-steps/
+def listar_produtos() -> list[ProductRead]:
+    """Return all products ordered by name."""
+    response = get_admin_client().table(_TABLE).select("*").order("nome").execute()
+    return [ProductRead.model_validate(row) for row in response.data or []]
 
 
-# get
-def listar_produtos() -> list[Product]:
-    """Retorna todos os produtos cadastrados, ordenados por nome."""
-    response = get_client().table(_TABLE).select("*").order("nome").execute()
-    return [Product.model_validate(row) for row in response.data or []]
-
-# get
-def buscar_produto(produto_id: str) -> Product | None:
-    """Busca um produto pelo seu UUID.
-
-    Retorna `None` quando o produto não existe.
-    """
+def buscar_produto(produto_id: str) -> ProductRead:
+    """Fetch a single product by UUID. Raises NotFoundError if missing."""
     response = (
-        get_client().table(_TABLE).select("*").eq("id", produto_id).limit(1).execute()
+        get_admin_client()
+        .table(_TABLE)
+        .select("*")
+        .eq("id", produto_id)
+        .limit(1)
+        .execute()
+    )
+    rows = response.data or []
+    if not rows:
+        raise NotFoundError("Produto", produto_id)
+    return ProductRead.model_validate(rows[0])
+
+
+def buscar_produto_por_sku(sku: str) -> ProductRead | None:
+    """Fetch a product by SKU. Returns None if not found."""
+    response = (
+        get_admin_client()
+        .table(_TABLE)
+        .select("*")
+        .eq("sku", sku)
+        .limit(1)
+        .execute()
     )
     rows = response.data or []
     if not rows:
         return None
-    return Product.model_validate(rows[0])
+    return ProductRead.model_validate(rows[0])
 
-# post
-def criar_produto(data: ProductCreate) -> Product:
-    """Insere um novo produto e retorna o registro persistido."""
-    payload = _serialize_for_supabase(data.model_dump(exclude_none=True))
-    response = get_client().table(_TABLE).insert(payload).execute()
-    return Product.model_validate(response.data[0])
 
-# post
-def atualizar_produto(produto_id: str, data: ProductUpdate) -> Product | None:
-    """Atualiza parcialmente um produto.
+def criar_produto(data: ProductCreate) -> ProductRead:
+    """Insert a new product. Raises ConflictError on duplicate SKU."""
+    if data.sku:
+        existing = buscar_produto_por_sku(data.sku)
+        if existing:
+            raise ConflictError(f"SKU '{data.sku}' já está em uso")
 
-    Apenas os campos presentes em `data.model_fields_set` são enviados ao
-    Supabase, permitindo que `None` seja usado para limpar um campo de forma
-    explícita quando o cliente assim desejar.
+    payload = _serialize(data.model_dump(exclude_none=True))
+    response = get_admin_client().table(_TABLE).insert(payload).execute()
+    return ProductRead.model_validate(response.data[0])
 
-    Retorna `None` quando o produto não existe.
-    """
+
+def atualizar_produto(produto_id: str, data: ProductUpdate) -> ProductRead:
+    """Partially update a product. Only explicitly set fields are sent."""
+    # Ensure the product exists
+    buscar_produto(produto_id)
+
     fields = {name: getattr(data, name) for name in data.model_fields_set}
     if not fields:
-        # Nada a atualizar — devolve o estado atual.
         return buscar_produto(produto_id)
 
-    payload = _serialize_for_supabase(fields)
-    response = get_client().table(_TABLE).update(payload).eq("id", produto_id).execute()
+    # Check SKU uniqueness if changing SKU
+    if "sku" in fields and fields["sku"] is not None:
+        existing = buscar_produto_por_sku(fields["sku"])
+        if existing and existing.id != produto_id:
+            raise ConflictError(f"SKU '{fields['sku']}' já está em uso")
+
+    payload = _serialize(fields)
+    response = (
+        get_admin_client()
+        .table(_TABLE)
+        .update(payload)
+        .eq("id", produto_id)
+        .execute()
+    )
     rows = response.data or []
     if not rows:
-        return None
-    return Product.model_validate(rows[0])
+        raise NotFoundError("Produto", produto_id)
+    return ProductRead.model_validate(rows[0])
 
-# delete
+
 def deletar_produto(produto_id: str) -> bool:
-    """Remove um produto. Retorna `True` se algo foi deletado."""
-    response = get_client().table(_TABLE).delete().eq("id", produto_id).execute()
+    """Delete a product by UUID. Returns True if deleted."""
+    buscar_produto(produto_id)  # raises NotFoundError if missing
+    response = (
+        get_admin_client().table(_TABLE).delete().eq("id", produto_id).execute()
+    )
     return bool(response.data)
 
-# get
-def listar_estoque_atual() -> list[ProductWithStock]:
-    """Lista a posição atual de estoque via view `estoque_atual`.
 
-    Inclui o flag derivado `abaixo_minimo`, calculado em Python para evitar
-    dependência adicional na view.
-    """
-    response = get_client().table(_VIEW_ESTOQUE).select("*").order("nome").execute()
-
-    resultado: list[ProductWithStock] = []
+def listar_estoque_atual() -> list[StockPosition]:
+    """List current stock position from the 'estoque_atual' view."""
+    response = (
+        get_admin_client().table(_VIEW_ESTOQUE).select("*").order("nome").execute()
+    )
+    result: list[StockPosition] = []
     for row in response.data or []:
-        quantidade_atual = Decimal(str(row.get("quantidade_atual") or 0))
-        estoque_minimo = row.get("estoque_minimo")
-        abaixo_minimo = estoque_minimo is not None and quantidade_atual < Decimal(
-            str(estoque_minimo)
-        )
-        resultado.append(
-            ProductWithStock(
-                id=row["produto_id"],
+        quantidade = row.get("quantidade_atual") or 0
+        minimo = row.get("estoque_minimo") or 0
+        result.append(
+            StockPosition(
+                produto_id=row["produto_id"],
                 nome=row["nome"],
                 sku=row.get("sku"),
-                unidade=row.get("unidade"),
-                estoque_minimo=estoque_minimo,
-                quantidade_atual=quantidade_atual,
-                abaixo_minimo=abaixo_minimo,
+                unidade=row.get("unidade", "un"),
+                estoque_minimo=minimo,
+                quantidade_atual=quantidade,
+                abaixo_minimo=quantidade < minimo,
             )
         )
-    return resultado
+    return result
+
+
+def listar_alertas_estoque() -> list[StockPosition]:
+    """Return only products below minimum stock level."""
+    return [p for p in listar_estoque_atual() if p.abaixo_minimo]

@@ -6,6 +6,11 @@ stocky.drawio
 # Claude Code
 CLAUDE.md
 .memsearch/
+.claude/
+.superpowers/
+
+# Obsidian local workspace
+.obsidian/
 
 # Python
 __pycache__/
@@ -37,6 +42,8 @@ node_modules/
 *.mobileprovision
 *.orig.*
 web-build/
+mobile/dist/
+mobile/dist-ios/
 android/app/build/
 android/.gradle/
 android/local.properties

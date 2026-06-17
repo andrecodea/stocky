@@ -1,23 +1,18 @@
-# config
-from config import settings, Settings
-import os
 import logging
+import os
+
+from langchain.agents import create_agent
+from langchain_anthropic import ChatAnthropic
+from langchain_core.language_models import BaseChatModel
+from langchain_core.runnables import Runnable
+from langchain_openai import ChatOpenAI
+
+from config import Settings, settings
+from tools import tavily_search
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# llmops
-from langchain.agents import create_agent
-from langchain_anthropic import ChatAnthropic
-from langchain_openai import ChatOpenAI
-from langchain_core.language_models import BaseChatModel
-from langchain_core.runnables import Runnable
-# from langgraph.checkpoint.memory import InMemorySaver
-# from langchain.agents.middleware import ToolRetryMiddleware
-
-# tooling
-from tools import tavily_search
-from tavily import UsageLimitExceededError
 
 def _init_llm(config: Settings, model_name: str | None = None) -> BaseChatModel:
     """Initializes LLM with LLMConfig Pydantic BaseModel and fallback mechanism."""
@@ -35,6 +30,7 @@ def _init_llm(config: Settings, model_name: str | None = None) -> BaseChatModel:
 
     raise EnvironmentError("No LLM API key found, provide ANTHROPIC_API_KEY or OPENAI_API_KEY in .env")
 
+
 def build_agent() -> Runnable:
     llm = _init_llm(settings)
 
@@ -42,8 +38,8 @@ def build_agent() -> Runnable:
         model=llm,
         tools=[tavily_search],
         system_prompt=(
-            "Você é um assistente especializado em gestão de estoque. "
-            "Responda sempre em português, de forma clara e objetiva."
+            "Voce e um assistente especializado em gestao de estoque. "
+            "Responda sempre em portugues, de forma clara e objetiva."
         ),
     )
 

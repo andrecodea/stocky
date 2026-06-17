@@ -1,0 +1,28 @@
+{
+  "expo": {
+    "name": "Stocky",
+    "slug": "stocky-mobile",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "stocky",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "splash": {
+      "backgroundColor": "#0d0d0d"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.wedgedynamics.stocky"
+    },
+    "android": {
+      "package": "com.wedgedynamics.stocky"
+    },
+    "extra": {
+      "apiUrl": "$EXPO_PUBLIC_STOCKY_API_URL"
+    },
+    "plugins": [
+      "expo-font",
+      "expo-secure-store"
+    ]
+  }
+}
