@@ -45,6 +45,7 @@ INDEX.md
 ## Visual
 
 - [System overview](docs/architecture/system-overview.html)
+- [DB schema](docs/architecture/db-schema.html)
 - [AI modules](docs/architecture/ai-modules.html)
 - [API endpoints](docs/architecture/api-endpoints.html)
 - [Next.js screens](docs/architecture/nextjs-screens.html)

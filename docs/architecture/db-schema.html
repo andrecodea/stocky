@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stocky - DB Schema</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #0d0d0d;
+    color: #e6e6e6;
+    font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.5;
+  }
+  main {
+    width: min(1180px, calc(100vw - 48px));
+    margin: 0 auto;
+    padding: 36px 0 56px;
+  }
+  h1 { margin: 0 0 4px; font-size: 24px; }
+  h2 { margin: 34px 0 12px; font-size: 17px; }
+  h3 { margin: 0 0 8px; font-size: 14px; }
+  p { margin: 0 0 12px; color: #bdbdbd; }
+  code {
+    color: #d6e6ff;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 4px;
+    padding: 1px 5px;
+    font-family: Consolas, "SFMono-Regular", monospace;
+    font-size: 12px;
+  }
+  .meta {
+    color: #858585;
+    font-size: 12px;
+    margin-bottom: 24px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 12px;
+  }
+  .card {
+    border: 1px solid #2b2b2b;
+    background: #151515;
+    border-radius: 8px;
+    padding: 14px;
+  }
+  .card strong { color: #ffffff; }
+  .tag-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    min-height: 22px;
+    border-radius: 4px;
+    padding: 2px 7px;
+    background: #232323;
+    border: 1px solid #333;
+    color: #b8d9ff;
+    font-size: 11px;
+    font-family: Consolas, "SFMono-Regular", monospace;
+  }
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid #2b2b2b;
+    border-radius: 8px;
+    background: #121212;
+    margin-bottom: 14px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 760px;
+  }
+  th, td {
+    text-align: left;
+    vertical-align: top;
+    padding: 8px 10px;
+    border-bottom: 1px solid #272727;
+    font-size: 12px;
+  }
+  th {
+    position: sticky;
+    top: 0;
+    background: #1c1c1c;
+    color: #f2f2f2;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  tr:last-child td { border-bottom: 0; }
+  .nullable { color: #8f8f8f; }
+  .required { color: #f8c37b; }
+  .ok { color: #9ee6b8; }
+  .warn { color: #ffd27f; }
+  .critical { color: #ff9b9b; }
+  .schema-map {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .entity {
+    border: 1px solid #31405a;
+    background: #111925;
+    border-radius: 8px;
+    padding: 12px;
+  }
+  .entity h3 { color: #d6e6ff; }
+  .entity ul { margin: 8px 0 0; padding-left: 18px; color: #b8c8df; font-size: 12px; }
+  .relationship {
+    border: 1px solid #3a3422;
+    background: #1d190e;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-family: Consolas, "SFMono-Regular", monospace;
+    font-size: 12px;
+    color: #ffe0a3;
+  }
+  .section-note {
+    border-left: 3px solid #2e6fbe;
+    background: #111720;
+    padding: 10px 12px;
+    border-radius: 0 6px 6px 0;
+    color: #c7d9ee;
+  }
+  .source-list {
+    color: #bdbdbd;
+    font-size: 12px;
+    padding-left: 18px;
+  }
+  @media (max-width: 700px) {
+    main { width: min(100vw - 28px, 1180px); padding-top: 24px; }
+    h1 { font-size: 21px; }
+    table { min-width: 680px; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Stocky - Database Schema</h1>
+  <p class="meta">Supabase Postgres schema documentado a partir das migrations locais. Atualizado em 2026-06-17.</p>
+
+  <section>
+    <h2>Resumo</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Dominio principal</h3>
+        <p>Produtos, lotes, movimentacoes de estoque e perfis de usuario.</p>
+        <div class="tag-row">
+          <span class="tag">produtos</span>
+          <span class="tag">lotes</span>
+          <span class="tag">movimentacoes</span>
+          <span class="tag">perfis</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Leituras operacionais</h3>
+        <p>A view <code>estoque_atual</code> agrega entradas e saidas por produto para alimentar mobile, alertas e dashboard.</p>
+        <div class="tag-row">
+          <span class="tag">estoque_atual</span>
+          <span class="tag">alertas</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>IA persistida</h3>
+        <p><code>ai_logs</code> guarda insights estruturados para UI mobile/web consumir sem esperar agentes longos.</p>
+        <div class="tag-row">
+          <span class="tag">ai_logs</span>
+          <span class="tag">jsonb</span>
+          <span class="tag">RLS</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Auth e RBAC</h3>
+        <p>Supabase Auth cria usuarios; <code>perfis</code> guarda nome e papel. O backend tambem valida RBAC antes de acessar dados via service role.</p>
+        <div class="tag-row">
+          <span class="tag">auth.users</span>
+          <span class="tag">operador</span>
+          <span class="tag">admin</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Mapa de Entidades</h2>
+    <div class="schema-map">
+      <div class="entity">
+        <h3>produtos</h3>
+        <p>Catalogo e parametros de estoque.</p>
+        <ul>
+          <li>PK: <code>id</code></li>
+          <li>Unique: <code>sku</code></li>
+          <li>Atualiza <code>atualizado_em</code> via trigger</li>
+        </ul>
+      </div>
+      <div class="entity">
+        <h3>lotes</h3>
+        <p>Lotes por produto, validade e fornecedor.</p>
+        <ul>
+          <li>PK: <code>id</code></li>
+          <li>FK: <code>produto_id -> produtos.id</code></li>
+        </ul>
+      </div>
+      <div class="entity">
+        <h3>movimentacoes</h3>
+        <p>Entradas, saidas e ajustes de estoque.</p>
+        <ul>
+          <li>PK: <code>id</code></li>
+          <li>FKs para produto, lote e usuario</li>
+          <li>Base da view <code>estoque_atual</code></li>
+        </ul>
+      </div>
+      <div class="entity">
+        <h3>perfis</h3>
+        <p>Extensao de usuario Supabase para RBAC.</p>
+        <ul>
+          <li>PK/FK: <code>id -> auth.users.id</code></li>
+          <li>Role: <code>operador</code> ou <code>admin</code></li>
+        </ul>
+      </div>
+      <div class="entity">
+        <h3>ai_logs</h3>
+        <p>Insights estruturados de IA para operadores e admins.</p>
+        <ul>
+          <li>PK: <code>id</code></li>
+          <li>JSONB: <code>conteudo</code>, <code>fontes</code></li>
+          <li>Filtros: tipo, audiencia, severidade</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Relacionamentos</h2>
+    <div class="grid">
+      <div class="relationship">lotes.produto_id -> produtos.id<br><span class="critical">ON DELETE RESTRICT</span></div>
+      <div class="relationship">movimentacoes.produto_id -> produtos.id<br><span class="critical">ON DELETE RESTRICT</span></div>
+      <div class="relationship">movimentacoes.lote_id -> lotes.id<br><span class="nullable">nullable</span></div>
+      <div class="relationship">movimentacoes.usuario_id -> auth.users.id<br><span class="nullable">nullable no seed; preenchido pelo backend no POST</span></div>
+      <div class="relationship">perfis.id -> auth.users.id<br><span class="critical">ON DELETE CASCADE</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Enums</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Tipo</th><th>Valores</th><th>Uso</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>tipo_movimentacao</code></td>
+            <td><code>entrada</code>, <code>saida</code>, <code>ajuste</code></td>
+            <td>Controla o sinal de quantidade em <code>movimentacoes</code> e na view <code>estoque_atual</code>.</td>
+          </tr>
+          <tr>
+            <td><code>role_usuario</code></td>
+            <td><code>operador</code>, <code>admin</code></td>
+            <td>Define permissoes no backend e nas policies RLS.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Tabelas</h2>
+
+    <h3>produtos</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Coluna</th><th>Tipo</th><th>Nulo</th><th>Default</th><th>Notas</th></tr></thead>
+        <tbody>
+          <tr><td><code>id</code></td><td>uuid</td><td class="required">not null</td><td><code>gen_random_uuid()</code></td><td>Primary key.</td></tr>
+          <tr><td><code>nome</code></td><td>text</td><td class="required">not null</td><td>-</td><td>Nome comercial do produto.</td></tr>
+          <tr><td><code>sku</code></td><td>text</td><td class="nullable">nullable</td><td>-</td><td>Unique quando informado.</td></tr>
+          <tr><td><code>descricao</code></td><td>text</td><td class="nullable">nullable</td><td>-</td><td>Descricao livre.</td></tr>
+          <tr><td><code>preco_custo</code></td><td>numeric(10,2)</td><td class="required">not null</td><td><code>0</code></td><td>Base de custo financeiro.</td></tr>
+          <tr><td><code>preco_venda</code></td><td>numeric(10,2)</td><td class="required">not null</td><td><code>0</code></td><td>Base de receita/margem.</td></tr>
+          <tr><td><code>unidade</code></td><td>text</td><td class="required">not null</td><td><code>un</code></td><td>Unidade de medida.</td></tr>
+          <tr><td><code>estoque_minimo</code></td><td>integer</td><td class="required">not null</td><td><code>0</code></td><td>Parametro de alerta.</td></tr>
+          <tr><td><code>foto_url</code></td><td>text</td><td class="nullable">nullable</td><td>-</td><td>Reservado para storage/imagem.</td></tr>
+          <tr><td><code>criado_em</code></td><td>timestamptz</td><td class="required">not null</td><td><code>now()</code></td><td>Data de criacao.</td></tr>
+          <tr><td><code>atualizado_em</code></td><td>timestamptz</td><td class="required">not null</td><td><code>now()</code></td><td>Atualizado por trigger antes de UPDATE.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>lotes</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Coluna</th><th>Tipo</th><th>Nulo</th><th>Default</th><th>Notas</th></tr></thead>
+        <tbody>
+          <tr><td><code>id</code></td><td>uuid</td><td class="required">not null</td><td><code>gen_random_uuid()</code></td><td>Primary key.</td></tr>
+          <tr><td><code>produto_id</code></td><td>uuid</td><td class="required">not null</td><td>-</td><td>FK para <code>produtos.id</code>.</td></tr>
+          <tr><td><code>numero_lote</code></td><td>text</td><td class="nullable">nullable</td><td>-</td><td>Identificacao do lote.</td></tr>
+          <tr><td><code>data_validade</code></td><td>date</td><td class="nullable">nullable</td><td>-</td><td>Usado para alertas futuros de validade.</td></tr>
+          <tr><td><code>fornecedor</code></td><td>text</td><td class="nullable">nullable</td><td>-</td><td>Fornecedor textual.</td></tr>
+          <tr><td><code>custo_unitario</code></td><td>numeric(10,2)</td><td class="nullable">nullable</td><td>-</td><td>Custo por lote.</td></tr>
+          <tr><td><code>criado_em</code></td><td>timestamptz</td><td class="required">not null</td><td><code>now()</code></td><td>Data de criacao.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>movimentacoes</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Coluna</th><th>Tipo</th><th>Nulo</th><th>Default</th><th>Notas</th></tr></thead>
+        <tbody>
+          <tr><td><code>id</code></td><td>uuid</td><td class="required">not null</td><td><code>gen_random_uuid()</code></td><td>Primary key.</td></tr>
+          <tr><td><code>produto_id</code></td><td>uuid</td><td class="required">not null</td><td>-</td><td>FK para <code>produtos.id</code>.</td></tr>
+          <tr><td><code>lote_id</code></td><td>uuid</td><td class="nullable">nullable</td><td>-</td><td>FK opcional para <code>lotes.id</code>.</td></tr>
+          <tr><td><code>tipo</code></td><td>tipo_movimentacao</td><td class="required">not null</td><td>-</td><td><code>entrada</code>, <code>saida</code> ou <code>ajuste</code>.</td></tr>
+          <tr><td><code>quantidade</code></td><td>integer</td><td class="required">not null</td><td>-</td><td>Quantidade bruta do movimento.</td></tr>
+          <tr><td><code>custo_unitario</code></td><td>numeric(10,2)</td><td class="nullable">nullable</td><td>-</td><td>Custo pontual da movimentacao.</td></tr>
+          <tr><td><code>observacao</code></td><td>text</td><td class="nullable">nullable</td><td>-</td><td>Comentario operacional.</td></tr>
+          <tr><td><code>usuario_id</code></td><td>uuid</td><td class="nullable">nullable</td><td>-</td><td>FK para <code>auth.users.id</code>; preenchido pelo backend em criacao autenticada.</td></tr>
+          <tr><td><code>criado_em</code></td><td>timestamptz</td><td class="required">not null</td><td><code>now()</code></td><td>Data do movimento.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>perfis</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Coluna</th><th>Tipo</th><th>Nulo</th><th>Default</th><th>Notas</th></tr></thead>
+        <tbody>
+          <tr><td><code>id</code></td><td>uuid</td><td class="required">not null</td><td>-</td><td>Primary key e FK para <code>auth.users.id</code>.</td></tr>
+          <tr><td><code>nome</code></td><td>text</td><td class="required">not null</td><td>-</td><td>Nome exibido na UI.</td></tr>
+          <tr><td><code>role</code></td><td>role_usuario</td><td class="required">not null</td><td><code>operador</code></td><td>Usado por RBAC e RLS.</td></tr>
+          <tr><td><code>criado_em</code></td><td>timestamptz</td><td class="required">not null</td><td><code>now()</code></td><td>Data de criacao do perfil.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>ai_logs</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Coluna</th><th>Tipo</th><th>Nulo</th><th>Default</th><th>Notas</th></tr></thead>
+        <tbody>
+          <tr><td><code>id</code></td><td>uuid</td><td class="required">not null</td><td><code>gen_random_uuid()</code></td><td>Primary key.</td></tr>
+          <tr><td><code>tipo</code></td><td>text</td><td class="required">not null</td><td>-</td><td>Check: <code>estoque</code>, <code>financeiro</code>, <code>comercial</code>, <code>logistica</code>, <code>supply_chain</code>, <code>geral</code>.</td></tr>
+          <tr><td><code>titulo</code></td><td>text</td><td class="required">not null</td><td>-</td><td>Titulo curto do insight.</td></tr>
+          <tr><td><code>resumo</code></td><td>text</td><td class="required">not null</td><td>-</td><td>Resumo renderizado pela UI.</td></tr>
+          <tr><td><code>conteudo</code></td><td>jsonb</td><td class="required">not null</td><td><code>{}</code></td><td>Payload estruturado do agente.</td></tr>
+          <tr><td><code>fontes</code></td><td>jsonb</td><td class="required">not null</td><td><code>[]</code></td><td>Lista de fontes ou entidades usadas.</td></tr>
+          <tr><td><code>severidade</code></td><td>text</td><td class="required">not null</td><td><code>info</code></td><td>Check: <code>info</code>, <code>atencao</code>, <code>critica</code>.</td></tr>
+          <tr><td><code>audiencia</code></td><td>text</td><td class="required">not null</td><td><code>ambos</code></td><td>Check: <code>operador</code>, <code>admin</code>, <code>ambos</code>.</td></tr>
+          <tr><td><code>agente</code></td><td>text</td><td class="nullable">nullable</td><td>-</td><td>Nome do agente ou origem do insight.</td></tr>
+          <tr><td><code>criado_em</code></td><td>timestamptz</td><td class="required">not null</td><td><code>now()</code></td><td>Ordenacao padrao dos insights.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>View Operacional</h2>
+    <div class="section-note">
+      <p><code>estoque_atual</code> calcula a posicao atual por produto. Entradas somam, saidas subtraem e ajustes atualmente entram como zero na view.</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Coluna</th><th>Origem</th><th>Notas</th></tr></thead>
+        <tbody>
+          <tr><td><code>produto_id</code></td><td><code>produtos.id</code></td><td>Identificador do produto.</td></tr>
+          <tr><td><code>nome</code></td><td><code>produtos.nome</code></td><td>Nome do produto.</td></tr>
+          <tr><td><code>sku</code></td><td><code>produtos.sku</code></td><td>SKU opcional.</td></tr>
+          <tr><td><code>estoque_minimo</code></td><td><code>produtos.estoque_minimo</code></td><td>Comparado com <code>quantidade_atual</code> para alertas.</td></tr>
+          <tr><td><code>unidade</code></td><td><code>produtos.unidade</code></td><td>Unidade de exibicao.</td></tr>
+          <tr><td><code>quantidade_atual</code></td><td><code>SUM(movimentacoes)</code></td><td>Entradas positivas, saidas negativas, ajustes neutros.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Indices e Triggers</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Objeto</th><th>Tipo</th><th>Destino</th><th>Objetivo</th></tr></thead>
+        <tbody>
+          <tr><td><code>idx_movimentacoes_produto_id</code></td><td>index</td><td><code>movimentacoes(produto_id)</code></td><td>Busca por produto.</td></tr>
+          <tr><td><code>idx_movimentacoes_criado_em</code></td><td>index</td><td><code>movimentacoes(criado_em DESC)</code></td><td>Historico recente.</td></tr>
+          <tr><td><code>idx_produtos_sku</code></td><td>partial index</td><td><code>produtos(sku) WHERE sku IS NOT NULL</code></td><td>Busca por SKU.</td></tr>
+          <tr><td><code>idx_lotes_produto_id</code></td><td>index</td><td><code>lotes(produto_id)</code></td><td>Consulta de lotes por produto.</td></tr>
+          <tr><td><code>idx_lotes_data_validade</code></td><td>partial index</td><td><code>lotes(data_validade) WHERE data_validade IS NOT NULL</code></td><td>Alertas futuros de validade.</td></tr>
+          <tr><td><code>idx_ai_logs_criado_em</code></td><td>index</td><td><code>ai_logs(criado_em DESC)</code></td><td>Feed de insights recentes.</td></tr>
+          <tr><td><code>idx_ai_logs_tipo</code></td><td>index</td><td><code>ai_logs(tipo)</code></td><td>Filtro por dominio de IA.</td></tr>
+          <tr><td><code>idx_ai_logs_audiencia</code></td><td>index</td><td><code>ai_logs(audiencia)</code></td><td>Filtro por audiencia.</td></tr>
+          <tr><td><code>trg_produtos_atualizado_em</code></td><td>trigger</td><td><code>produtos</code></td><td>Atualiza <code>atualizado_em</code> antes de UPDATE.</td></tr>
+          <tr><td><code>on_auth_user_created</code></td><td>trigger</td><td><code>auth.users</code></td><td>Cria perfil com role <code>operador</code> no signup.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>RLS e Acesso</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Tabela</th><th>Policy</th><th>Acao</th><th>Regra</th></tr></thead>
+        <tbody>
+          <tr><td><code>produtos</code></td><td><code>produtos_select</code></td><td>SELECT</td><td>Todos autenticados leem.</td></tr>
+          <tr><td><code>produtos</code></td><td><code>produtos_admin_write</code></td><td>ALL</td><td>Somente <code>admin</code> escreve.</td></tr>
+          <tr><td><code>movimentacoes</code></td><td><code>movimentacoes_select</code></td><td>SELECT</td><td>Operador le as proprias; admin le todas.</td></tr>
+          <tr><td><code>movimentacoes</code></td><td><code>movimentacoes_insert</code></td><td>INSERT</td><td>Autenticado insere apenas movimento proprio.</td></tr>
+          <tr><td><code>movimentacoes</code></td><td><code>movimentacoes_admin_write</code></td><td>UPDATE</td><td>Somente <code>admin</code> edita.</td></tr>
+          <tr><td><code>lotes</code></td><td><code>lotes_select</code></td><td>SELECT</td><td>Todos autenticados leem.</td></tr>
+          <tr><td><code>lotes</code></td><td><code>lotes_admin_write</code></td><td>ALL</td><td>Somente <code>admin</code> escreve.</td></tr>
+          <tr><td><code>perfis</code></td><td><code>perfis_select</code></td><td>SELECT</td><td>Usuario le o proprio perfil; admin le todos.</td></tr>
+          <tr><td><code>perfis</code></td><td><code>perfis_update_own</code></td><td>UPDATE</td><td>Usuario edita o proprio perfil sem alterar role.</td></tr>
+          <tr><td><code>ai_logs</code></td><td><code>ai_logs_operator_select</code></td><td>SELECT</td><td>Operador le <code>operador</code>/<code>ambos</code>; admin le tudo.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="section-note">O backend usa service role para dados apos validar auth/RBAC nas dependencies FastAPI. A RLS permanece como camada de defesa para acesso direto ao Supabase.</p>
+  </section>
+
+  <section>
+    <h2>Seed Local</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Produtos</h3>
+        <p>10 produtos de mercearia com SKU, custo, venda, unidade e estoque minimo.</p>
+      </div>
+      <div class="card">
+        <h3>Movimentacoes</h3>
+        <p>Entradas iniciais para todos os produtos e saidas simuladas para criar alertas de estoque baixo.</p>
+      </div>
+      <div class="card">
+        <h3>AI log de teste</h3>
+        <p><code>scripts/seed_test_data.py</code> cria usuarios de teste e um insight <code>ai_logs</code> idempotente para validar mobile.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Fontes</h2>
+    <ul class="source-list">
+      <li><code>supabase/migrations/20260527000001_initial_schema.sql</code></li>
+      <li><code>supabase/migrations/20260527000002_rls_base.sql</code></li>
+      <li><code>supabase/migrations/20260527000003_seed.sql</code></li>
+      <li><code>supabase/migrations/20260617000001_ai_logs.sql</code></li>
+      <li><code>scripts/seed_test_data.py</code></li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>

@@ -153,6 +153,7 @@ Contrato produtivo que conecta todas as superficies (mobile, web, IA) ao banco.
 ## Referencias visuais
 
 - [System overview](architecture/system-overview.html)
+- [DB schema](architecture/db-schema.html)
 - [AI modules](architecture/ai-modules.html)
 - [API endpoints](architecture/api-endpoints.html)
 - [Next.js screens](architecture/nextjs-screens.html)
